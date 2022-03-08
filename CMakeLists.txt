@@ -31,6 +31,12 @@ if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/min-lib/CMakeLists.txt")
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/min-lib)
 endif ()
 
+# Link LibTorch
+find_package(Torch REQUIRED)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/source/libtorch")
+include_directories("${TORCH_INCLUDE_DIRS}")
+cmake_policy(SET CMP0079 NEW)
 
 # Generate a project for every folder in the "source/projects" folder
 SUBDIRLIST(PROJECT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/projects)
@@ -38,6 +44,10 @@ foreach (project_dir ${PROJECT_DIRS})
     if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir}/CMakeLists.txt")
         message("Generating: ${project_dir}")
         add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir})
+        
+        # Include LibTorch in projects
+        target_link_libraries(${project_dir} PUBLIC "${TORCH_LIBRARIES}")
+        set_property(TARGET ${project_dir} PROPERTY CXX_STANDARD 17)
     endif ()
 endforeach ()
 

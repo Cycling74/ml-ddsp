@@ -11,9 +11,7 @@ support
 build
 tests
 *.o
-*.dylib
 tmp
 .DS_Store
 .vs
 package-info.json
-

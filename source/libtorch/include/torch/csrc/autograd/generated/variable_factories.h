@@ -2,15 +2,94 @@
 
 // @generated from tools/autograd/templates/variable_factories.h
 
-#include <ATen/ATen.h>
+#include <ATen/core/Tensor.h>
 #include <ATen/TracerMode.h>
 #include <ATen/core/grad_mode.h>
 #include <c10/util/ArrayRef.h>
 #include <c10/core/MemoryFormat.h>
 #include <torch/csrc/api/include/torch/detail/TensorDataContainer.h>
 #include <torch/csrc/autograd/variable.h>
-#include <torch/csrc/jit/frontend/tracer.h>
-#include <torch/csrc/jit/ir/ir.h>
+
+#ifndef AT_PER_OPERATOR_HEADERS
+#include <ATen/Functions.h>
+#else
+#include <ATen/ops/from_blob.h>
+#include <ATen/ops/_cudnn_init_dropout_state.h>
+#include <ATen/ops/arange.h>
+#include <ATen/ops/arange.h>
+#include <ATen/ops/arange.h>
+#include <ATen/ops/bartlett_window.h>
+#include <ATen/ops/bartlett_window.h>
+#include <ATen/ops/blackman_window.h>
+#include <ATen/ops/blackman_window.h>
+#include <ATen/ops/empty.h>
+#include <ATen/ops/empty.h>
+#include <ATen/ops/_empty_affine_quantized.h>
+#include <ATen/ops/_empty_per_channel_affine_quantized.h>
+#include <ATen/ops/empty_quantized.h>
+#include <ATen/ops/empty_like.h>
+#include <ATen/ops/empty_strided.h>
+#include <ATen/ops/eye.h>
+#include <ATen/ops/eye.h>
+#include <ATen/ops/full.h>
+#include <ATen/ops/full.h>
+#include <ATen/ops/full_like.h>
+#include <ATen/ops/from_file.h>
+#include <ATen/ops/hann_window.h>
+#include <ATen/ops/hann_window.h>
+#include <ATen/ops/hamming_window.h>
+#include <ATen/ops/hamming_window.h>
+#include <ATen/ops/hamming_window.h>
+#include <ATen/ops/hamming_window.h>
+#include <ATen/ops/kaiser_window.h>
+#include <ATen/ops/kaiser_window.h>
+#include <ATen/ops/kaiser_window.h>
+#include <ATen/ops/linspace.h>
+#include <ATen/ops/logspace.h>
+#include <ATen/ops/ones.h>
+#include <ATen/ops/ones.h>
+#include <ATen/ops/ones_like.h>
+#include <ATen/ops/scalar_tensor.h>
+#include <ATen/ops/rand.h>
+#include <ATen/ops/rand.h>
+#include <ATen/ops/rand.h>
+#include <ATen/ops/rand.h>
+#include <ATen/ops/rand_like.h>
+#include <ATen/ops/randint.h>
+#include <ATen/ops/randint.h>
+#include <ATen/ops/randint.h>
+#include <ATen/ops/randint.h>
+#include <ATen/ops/randint_like.h>
+#include <ATen/ops/randint_like.h>
+#include <ATen/ops/randn.h>
+#include <ATen/ops/randn.h>
+#include <ATen/ops/randn.h>
+#include <ATen/ops/randn.h>
+#include <ATen/ops/randn_like.h>
+#include <ATen/ops/randperm.h>
+#include <ATen/ops/randperm.h>
+#include <ATen/ops/range.h>
+#include <ATen/ops/range.h>
+#include <ATen/ops/zeros.h>
+#include <ATen/ops/_efficientzerotensor.h>
+#include <ATen/ops/zeros.h>
+#include <ATen/ops/zeros_like.h>
+#include <ATen/ops/sparse_csr_tensor.h>
+#include <ATen/ops/sparse_csr_tensor.h>
+#include <ATen/ops/_sparse_csr_tensor_unsafe.h>
+#include <ATen/ops/sparse_coo_tensor.h>
+#include <ATen/ops/sparse_coo_tensor.h>
+#include <ATen/ops/sparse_coo_tensor.h>
+#include <ATen/ops/_sparse_coo_tensor_unsafe.h>
+#include <ATen/ops/_sparse_coo_tensor_with_dims.h>
+#include <ATen/ops/_sparse_coo_tensor_with_dims_and_tensors.h>
+#include <ATen/ops/_to_copy.h>
+#include <ATen/ops/tril_indices.h>
+#include <ATen/ops/triu_indices.h>
+#include <ATen/ops/normal.h>
+#include <ATen/ops/fft_fftfreq.h>
+#include <ATen/ops/fft_rfftfreq.h>
+#endif
 
 #include <functional>
 #include <initializer_list>
@@ -245,11 +324,11 @@ inline at::Tensor kaiser_window(int64_t window_length, bool periodic, double bet
   at::AutoDispatchBelowADInplaceOrView guard;
   return autograd::make_variable(at::kaiser_window(window_length, periodic, beta, at::TensorOptions(options).requires_grad(c10::nullopt)), /*requires_grad=*/options.requires_grad());
 }
-inline at::Tensor linspace(const at::Scalar & start, const at::Scalar & end, c10::optional<int64_t> steps = c10::nullopt, at::TensorOptions options = {}) {
+inline at::Tensor linspace(const at::Scalar & start, const at::Scalar & end, int64_t steps, at::TensorOptions options = {}) {
   at::AutoDispatchBelowADInplaceOrView guard;
   return autograd::make_variable(at::linspace(start, end, steps, at::TensorOptions(options).requires_grad(c10::nullopt)), /*requires_grad=*/options.requires_grad());
 }
-inline at::Tensor logspace(const at::Scalar & start, const at::Scalar & end, c10::optional<int64_t> steps = c10::nullopt, double base = 10.0, at::TensorOptions options = {}) {
+inline at::Tensor logspace(const at::Scalar & start, const at::Scalar & end, int64_t steps, double base = 10.0, at::TensorOptions options = {}) {
   at::AutoDispatchBelowADInplaceOrView guard;
   return autograd::make_variable(at::logspace(start, end, steps, base, at::TensorOptions(options).requires_grad(c10::nullopt)), /*requires_grad=*/options.requires_grad());
 }
@@ -352,6 +431,10 @@ inline at::Tensor range(const at::Scalar & start, const at::Scalar & end, at::Te
 inline at::Tensor zeros(at::IntArrayRef size, c10::optional<at::DimnameList> names, at::TensorOptions options = {}) {
   at::AutoDispatchBelowADInplaceOrView guard;
   return autograd::make_variable(at::zeros(size, names, at::TensorOptions(options).requires_grad(c10::nullopt)), /*requires_grad=*/options.requires_grad());
+}
+inline at::Tensor _efficientzerotensor(at::IntArrayRef size, at::TensorOptions options = {}) {
+  at::AutoDispatchBelowADInplaceOrView guard;
+  return autograd::make_variable(at::_efficientzerotensor(size, at::TensorOptions(options).requires_grad(c10::nullopt)), /*requires_grad=*/options.requires_grad());
 }
 inline at::Tensor zeros(at::IntArrayRef size, at::TensorOptions options = {}) {
   at::AutoDispatchBelowADInplaceOrView guard;

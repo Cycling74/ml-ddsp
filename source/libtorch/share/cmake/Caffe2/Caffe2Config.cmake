@@ -6,9 +6,9 @@
 # library version information
 
 set(CAFFE2_VERSION_MAJOR 1)
-set(CAFFE2_VERSION_MINOR 10)
-set(CAFFE2_VERSION_PATCH 2)
-set(CAFFE2_VERSION "1.10.2")
+set(CAFFE2_VERSION_MINOR 12)
+set(CAFFE2_VERSION_PATCH 0)
+set(CAFFE2_VERSION "1.12.0")
 
 # Utils functions.
 include("${CMAKE_CURRENT_LIST_DIR}/public/utils.cmake")

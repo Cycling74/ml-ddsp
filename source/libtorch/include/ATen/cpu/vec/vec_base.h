@@ -31,6 +31,7 @@
 #include <ATen/native/cpu/zmath.h>
 #include <c10/util/TypeCast.h>
 #include <c10/macros/Macros.h>
+#include <c10/util/irange.h>
 
 // These macros helped us unify vec_base.h
 #ifdef CPU_CAPABILITY_AVX512
@@ -57,8 +58,8 @@
 
 namespace at {
 namespace vec {
-// See Note [Acceptable use of anonymous namespace in header]
-namespace {
+// See Note [CPU_CAPABILITY namespace]
+inline namespace CPU_CAPABILITY {
 // at::Half and at::BFloat16 should be treated as floating point
 template <typename T>
 struct is_floating_point:
@@ -86,7 +87,11 @@ using int_same_size_t = typename int_of_size<sizeof(T)>::type;
 // NOTE: If you specialize on a type, you must define all operations!
 
 // emulates Vectorized types
+#if defined(__s390x__)
+template <class T, class TEMP=void>
+#else
 template <class T>
+#endif
 struct Vectorized {
 private:
   __at_align__ T values[VECTOR_WIDTH / sizeof(T)];
@@ -154,7 +159,7 @@ public:
   static Vectorized<T> blend(const Vectorized<T>& a, const Vectorized<T>& b) {
     int64_t mask = mask_;
     Vectorized vector;
-    for (int64_t i = 0; i < size(); i++) {
+    for (const auto i : c10::irange(size())) {
       if (mask & 0x01) {
         vector[i] = b[i];
       } else {
@@ -169,7 +174,7 @@ public:
     Vectorized vector;
     int_same_size_t<T> buffer[size()];
     mask.store(buffer);
-    for (int64_t i = 0; i < size(); i++) {
+    for (const auto i : c10::irange(size())) {
       if (buffer[i] & 0x01)
        {
         vector[i] = b[i];
@@ -182,14 +187,14 @@ public:
   template<typename step_t>  // step sometimes requires a higher precision type (e.g., T=int, step_t=double)
   static Vectorized<T> arange(T base = static_cast<T>(0), step_t step = static_cast<step_t>(1)) {
     Vectorized vector;
-    for (int64_t i = 0; i < size(); i++) {
+    for (const auto i : c10::irange(size())) {
       vector.values[i] = base + i * step;
     }
     return vector;
   }
   static Vectorized<T> set(const Vectorized<T>& a, const Vectorized<T>& b, int64_t count = size()) {
     Vectorized vector;
-    for (int64_t i = 0; i < size(); i++) {
+    for (const auto i : c10::irange(size())) {
       if (i < count) {
         vector[i] = b[i];
       } else {
@@ -344,7 +349,7 @@ public:
   }
   Vectorized<T> atan2(const Vectorized<T> &exp) const {
     Vectorized<T> ret;
-    for (int64_t i = 0; i < size(); i++) {
+    for (const auto i : c10::irange(size())) {
       ret[i] = std::atan2(values[i], exp[i]);
     }
     return ret;
@@ -384,7 +389,7 @@ public:
     // U is for SFINAE purposes only. Make sure it is not changed.
     static_assert(std::is_same<U, T>::value, "U must be T");
     Vectorized<T> ret;
-    for (int64_t i = 0; i < size(); i++) {
+    for (const auto i : c10::irange(size())) {
       ret[i] = std::fmod(values[i], q[i]);
     }
     return ret;
@@ -427,7 +432,7 @@ public:
   }
   Vectorized<T> hypot(const Vectorized<T> &b) const {
     Vectorized<T> ret;
-    for (int64_t i = 0; i < size(); i++) {
+    for (const auto i : c10::irange(size())) {
       ret[i] = std::hypot(values[i], b[i]);
     }
     return ret;
@@ -440,14 +445,14 @@ public:
   }
   Vectorized<T> igamma(const Vectorized<T> &x) const {
     Vectorized<T> ret;
-    for (int64_t i = 0; i < size(); i++) {
+    for (const auto i : c10::irange(size())) {
       ret[i] = calc_igamma(values[i], x[i]);
     }
     return ret;
   }
   Vectorized<T> igammac(const Vectorized<T> &x) const {
     Vectorized<T> ret;
-    for (int64_t i = 0; i < size(); i++) {
+    for (const auto i : c10::irange(size())) {
       ret[i] = calc_igammac(values[i], x[i]);
     }
     return ret;
@@ -460,7 +465,7 @@ public:
   }
   Vectorized<T> nextafter(const Vectorized<T> &b) const {
     Vectorized<T> ret;
-    for (int64_t i = 0; i < size(); i++) {
+    for (const auto i : c10::irange(size())) {
       ret[i] = std::nextafter(values[i], b[i]);
     }
     return ret;
@@ -498,7 +503,7 @@ public:
   }
   Vectorized<T> pow(const Vectorized<T> &exp) const {
     Vectorized<T> ret;
-    for (int64_t i = 0; i < size(); i++) {
+    for (const auto i : c10::irange(size())) {
       ret[i] = std::pow(values[i], exp[i]);
     }
     return ret;
@@ -830,7 +835,7 @@ inline gather(T const* base_addr, const Vectorized<int_same_size_t<T>>& vindex) 
   int_same_size_t<T> index_arr[size];
   vindex.store(static_cast<void*>(index_arr));
   T buffer[size];
-  for (int64_t i = 0; i < size; i++) {
+  for (const auto i : c10::irange(size)) {
     buffer[i] = base_addr[index_arr[i] * scale / sizeof(T)];
   }
   return Vectorized<T>::loadu(static_cast<void*>(buffer));
@@ -848,7 +853,7 @@ inline mask_gather(const Vectorized<T>& src, T const* base_addr,
   mask.store(static_cast<void*>(mask_arr));
   vindex.store(static_cast<void*>(index_arr));
   T buffer[size];
-  for (int64_t i = 0; i < size; i++) {
+  for (const auto i : c10::irange(size)) {
     if (mask_arr[i] & 0x01) {  // check highest bit
       buffer[i] = base_addr[index_arr[i] * scale / sizeof(T)];
     } else {
@@ -864,25 +869,24 @@ inline mask_gather(const Vectorized<T>& src, T const* base_addr,
 // Vectorized<int64_t> of 512 bits containing all ones (i.e., eight negative 1s).
 // A Vec<double> of 256 bits containing all ones can be cast to a
 // Vec<int64_t> of 256 bits containing all ones (i.e., four negative 1s).
-namespace {
-  // There is a struct here because we don't have static_if and I can't
-  // partially specialize a templated function.
-  template<typename dst_t, typename src_t>
-  struct CastImpl {
-    static inline Vectorized<dst_t> apply(const Vectorized<src_t>& src) {
-      src_t src_arr[Vectorized<src_t>::size()];
-      src.store(static_cast<void*>(src_arr));
-      return Vectorized<dst_t>::loadu(static_cast<const void*>(src_arr));
-    }
-  };
+// There is a struct here because we don't have static_if and I can't
+// partially specialize a templated function.
+template<typename dst_t, typename src_t>
+struct CastImpl {
+  static inline Vectorized<dst_t> apply(const Vectorized<src_t>& src) {
+    src_t src_arr[Vectorized<src_t>::size()];
+    src.store(static_cast<void*>(src_arr));
+    return Vectorized<dst_t>::loadu(static_cast<const void*>(src_arr));
+  }
+};
 
-  template<typename scalar_t>
-  struct CastImpl<scalar_t, scalar_t> {
-    static inline Vectorized<scalar_t> apply(const Vectorized<scalar_t>& src) {
-      return src;
-    }
-  };
-}
+template<typename scalar_t>
+struct CastImpl<scalar_t, scalar_t> {
+  static inline Vectorized<scalar_t> apply(const Vectorized<scalar_t>& src) {
+    return src;
+  }
+};
+
 template<typename dst_t, typename src_t>
 inline Vectorized<dst_t> cast(const Vectorized<src_t>& src) {
   return CastImpl<dst_t, src_t>::apply(src);
@@ -894,7 +898,7 @@ inline Vectorized<int_same_size_t<T>> convert_to_int_of_same_size(const Vectoriz
   T src_arr[size];
   src.store(static_cast<void*>(src_arr));
   int_same_size_t<T> buffer[size];
-  for (int64_t i = 0; i < size; i++) {
+  for (const auto i : c10::irange(size)) {
     buffer[i] = static_cast<int_same_size_t<T>>(src_arr[i]);
   }
   return Vectorized<int_same_size_t<T>>::loadu(static_cast<void*>(buffer));
@@ -921,7 +925,7 @@ deinterleave2(const Vectorized<T>& a, const Vectorized<T>& b) {
   T buffer2[size];
   a.store(static_cast<void*>(a_arr));
   b.store(static_cast<void*>(b_arr));
-  for (int64_t i = 0; i < half_size; i++) {
+  for (const auto i : c10::irange(half_size)) {
     buffer1[i] = a_arr[i * 2];
     buffer1[half_size + i] = b_arr[i * 2];
     buffer2[i] = a_arr[i * 2 + 1];
@@ -953,7 +957,7 @@ interleave2(const Vectorized<T>& a, const Vectorized<T>& b) {
   T buffer2[size];
   a.store(static_cast<void*>(a_arr));
   b.store(static_cast<void*>(b_arr));
-  for (int64_t i = 0; i < half_size; i++) {
+  for (const auto i : c10::irange(half_size)) {
     buffer1[i * 2] = a_arr[i];
     buffer1[i * 2 + 1] = b_arr[i];
     buffer2[i * 2] = a_arr[half_size + i];
@@ -968,7 +972,8 @@ inline void convert(const src_T *src, dst_T *dst, int64_t n) {
 #ifndef _MSC_VER
 # pragma unroll
 #endif
-  for (int64_t i = 0; i < n; i++) {
+  for (const auto i : c10::irange(n)) {
+    (void)i; //Suppress unused variable warning
     *dst = c10::static_cast_with_inter_type<dst_T, src_T>::apply(*src);
     src++;
     dst++;

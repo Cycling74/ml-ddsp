@@ -61,9 +61,8 @@ set_target_properties(c10 PROPERTIES
 add_library(torch_cpu SHARED IMPORTED)
 
 set_target_properties(torch_cpu PROPERTIES
-  INTERFACE_COMPILE_DEFINITIONS "USE_DISTRIBUTED;USE_C10D_GLOO;USE_RPC;USE_TENSORPIPE"
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
-  INTERFACE_LINK_LIBRARIES "protobuf::libprotobuf;c10;Threads::Threads;caffe2::mkl;caffe2::mkldnn"
+  INTERFACE_LINK_LIBRARIES "protobuf::libprotobuf;c10;caffe2::Threads;caffe2::mkl"
 )
 
 # Create imported target torch_cpu_library

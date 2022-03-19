@@ -80,7 +80,7 @@ else()
   # shared library.
   # TODO: this list might be incomplete.
   append_torchlib_if_found(c10)
-  if(ON)
+  if(OFF)
     append_torchlib_if_found(Caffe2_perfkernels_avx512 Caffe2_perfkernels_avx2 Caffe2_perfkernels_avx)
   endif()
 
@@ -128,6 +128,10 @@ if(ON)
 endif()
 
 if(OFF)
+  append_torchlib_if_found(torch_deploy)
+endif()
+
+if(OFF)
   if(MSVC)
     if(NOT NVTOOLEXT_HOME)
       set(NVTOOLEXT_HOME "C:/Program Files/NVIDIA Corporation/NvToolsExt")
@@ -162,8 +166,8 @@ if(OFF)
   list(APPEND TORCH_LIBRARIES ${TORCH_CUDA_LIBRARIES})
 endif()
 
-# When we build libtorch with the old GCC ABI, dependent libraries must too.
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+# When we build libtorch with the old libstdc++ ABI, dependent libraries must too.
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   set(TORCH_CXX_FLAGS "-D_GLIBCXX_USE_CXX11_ABI=")
 endif()
 

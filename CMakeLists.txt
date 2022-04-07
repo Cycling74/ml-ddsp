@@ -37,16 +37,6 @@ cmake_policy(SET CMP0079 NEW)
 cmake_policy(SET CMP0074 NEW)
 
 
-# Find MKL
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/source/mkl/lib")
-set(MKL_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/source/mkl")
-find_package(MKL REQUIRED)
-find_package(MKL CONFIG REQUIRED)
-message(STATUS "${MKL_IMPORTED_TARGETS}")
-include_directories(${MKL_INCLUDE_DIRS})
-link_directories(${MKL_ROOT}/lib)
-
-
 # Find LibTorch
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/source/libtorch")
 find_package(Torch REQUIRED)
@@ -60,11 +50,6 @@ foreach (project_dir ${PROJECT_DIRS})
     if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir}/CMakeLists.txt")
         message("Generating: ${project_dir}")
         add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir})
-
-	# Link MKL
-	target_compile_options(${project_dir} PUBLIC $<TARGET_PROPERTY:MKL::MKL,INTERFACE_COMPILE_OPTIONS>)
-	target_include_directories(${project_dir} PUBLIC $<TARGET_PROPERTY:MKL::MKL,INTERFACE_INCLUDE_DIRECTORIES>) 
-	target_link_libraries(${project_dir} PUBLIC $<LINK_ONLY:MKL::MKL>)
 
 	# Link LibTorch
         target_link_libraries(${project_dir} PUBLIC "${TORCH_LIBRARIES}")

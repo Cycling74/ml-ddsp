@@ -1,7 +1,7 @@
 /// @file
-///	@ingroup 	minexamples
-///	@copyright	Copyright 2018 The Min-DevKit Authors. All rights reserved.
-///	@license	Use of this source code is governed by the MIT License found in the License.md file.
+/// @ingroup    minexamples
+/// @copyright  Copyright 2018 The Min-DevKit Authors. All rights reserved.
+/// @license  Use of this source code is governed by the MIT License found in the License.md file.
 
 #include "c74_min.h"
 #include "dlfcn.h"
@@ -23,7 +23,7 @@ class DDSPModel
 public:
     DDSPModel();
     int load(std::string path);
-    at::Tensor perform(float *pitch, float *loudness, float *out_buffer, int buffer_size);
+    void perform(double *pitch, double *loudness, double *out_buffer, int buffer_size);
 
 private:
     torch::jit::script::Module m_scripted_model;
@@ -52,34 +52,36 @@ int DDSPModel::load(std::string path)
     }
 }
 
-at::Tensor DDSPModel::perform(float *pitch, float *loudness, float *out_buffer, int buffer_size)
+void DDSPModel::perform(double *pitch, double *loudness, double *out_buffer, int buffer_size)
 {
     torch::NoGradGuard no_grad;
     if (m_model_is_loaded)
     {
-        auto pitch_tensor = torch::from_blob(pitch, {1, buffer_size, 1});
-        auto loudness_tensor = torch::from_blob(loudness, {1, buffer_size, 1});
-        auto zero_tensor = torch::zeros({1, buffer_size, 1});
+        // prepare inputs to the model, explicit type casting necessary
+        // model is working with float while Max audio engine is based on double
+        auto options = torch::TensorOptions().dtype(torch::kFloat64);
+        auto pitch_tensor = torch::from_blob(pitch, {1, buffer_size, 1}, options);
+        auto loudness_tensor = torch::from_blob(loudness, {1, buffer_size, 1}, options);
 
-        std::vector<torch::jit::IValue> inputs = {pitch_tensor, loudness_tensor};
+        std::vector<torch::jit::IValue> inputs = {pitch_tensor.to(torch::kFloat32), loudness_tensor.to(torch::kFloat32)};
 
-        auto out_tensor = m_scripted_model.forward(inputs).toTensor();
-        auto out = out_tensor.contiguous().data_ptr<float>();
-        memcpy(out_buffer, out, buffer_size * sizeof(float));
+        // run inference
+        auto out_tensor = m_scripted_model.forward(inputs).toTensor().to(torch::kFloat64);
         
-        return out_tensor;
+        // write model output into output buffer
+        auto out = out_tensor.contiguous().data_ptr<double>();
+        memcpy(out_buffer, out, buffer_size * sizeof(double));
     }
-    return {};
 }
-class ddsp_decoder_tilde : public object<ddsp_decoder_tilde>, public sample_operator<2,1> {
+class ddsp_decoder_tilde : public object<ddsp_decoder_tilde>, public vector_operator<> {
 public:
-    MIN_DESCRIPTION	{ "DDSP decoder~." };
-    MIN_TAGS		{ "DDSP" };
-    MIN_AUTHOR		{ "Cycling '74" };
-    MIN_RELATED		{ "" };
+    MIN_DESCRIPTION     { "DDSP decoder~." };
+    MIN_TAGS            { "DDSP" };
+    MIN_AUTHOR          { "Cycling '74" };
+    MIN_RELATED         { "" };
 
     // execute the ddsp computation in a separate thread
-    void thread_perform(float *pitch, float *loudness, float *out_buffer, int buffer_size)
+    void thread_perform(double *pitch, double *loudness, double *out_buffer, int buffer_size)
     {
         model->perform(pitch, loudness, out_buffer, buffer_size);
     }
@@ -116,14 +118,23 @@ public:
         }
     }
                     
-    sample operator()(sample in1, sample in2) {
-        pitch_buffer[head] = in1; // add sample to the pitch buffer
-        loudness_buffer[head] = in2; // add sample to the loudness buffer
+    void operator()(audio_bundle input, audio_bundle output) {
+        //pitch_buffer[head] = in1; // add sample to the pitch buffer
+        //loudness_buffer[head] = in2; // add sample to the loudness buffer
         
-        head++; // progress with the head
-        
-        if (!(head % B_SIZE)) // if it is B_SIZE or B_SIZE * 2
-        {
+        int n = input.frame_count();
+
+        memcpy(pitch_buffer + head, input.samples(0), n * sizeof(double));
+        memcpy(loudness_buffer + head, input.samples(1), n * sizeof(double));
+        memcpy(output.samples(0), out_buffer + head, output.frame_count() * sizeof(double));
+
+        head += n; // progress with the head
+
+        if (!(head % B_SIZE)) { // if it is B_SIZE or B_SIZE * 2
+            if (compute_thread) {
+                compute_thread->join();
+            }
+            
             model_head = ((head + B_SIZE) % (2 * B_SIZE)); // points to the next / previous B_SIZE spaces available
             compute_thread = new std::thread(&ddsp_decoder_tilde::thread_perform, this,
                                             pitch_buffer + model_head,
@@ -133,8 +144,6 @@ public:
 
             head = head % (2 * B_SIZE); // set the head to the next available value
         }
-                    
-        return out_buffer[head]; // outputs the output buffer
     }
         
     // when object is loaded the first time
@@ -154,9 +163,9 @@ private:
     DDSPModel *model { nullptr };
 
     // buffers
-    float pitch_buffer[2 * B_SIZE];
-    float loudness_buffer[2 * B_SIZE];
-    float out_buffer[2 * B_SIZE];
+    double pitch_buffer[2 * B_SIZE];
+    double loudness_buffer[2 * B_SIZE];
+    double out_buffer[2 * B_SIZE];
 
     // variable to store the position in the buffer
     int head {0};

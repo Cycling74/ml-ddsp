@@ -15,15 +15,17 @@
 #include <stdlib.h>
 
 #define B_SIZE 256
+#define N_HARMONICS 100
 
 using namespace c74::min;
+namespace max = c74::max;
 
 class DDSPModel
 {
 public:
     DDSPModel();
     int load(std::string path);
-    void perform(double *pitch, double *loudness, float *out_buffer, int buffer_size);
+    void perform(double *pitch, double *loudness, double *f0, double *harmonic_amplitudes, int buffer_size);
 
 private:
     torch::jit::script::Module m_scripted_model;
@@ -52,7 +54,7 @@ int DDSPModel::load(std::string path)
     }
 }
 
-void DDSPModel::perform(double *pitch, double *loudness, float *out_buffer, int buffer_size)
+void DDSPModel::perform(double *pitch, double *loudness, double *f0, double *harmonic_amplitudes, int buffer_size)
 {
     torch::NoGradGuard no_grad;
     if (m_model_is_loaded)
@@ -62,20 +64,39 @@ void DDSPModel::perform(double *pitch, double *loudness, float *out_buffer, int 
         auto loudness_tensor = torch::from_blob(loudness, {1, buffer_size, 1}, options);
 
         std::vector<torch::jit::IValue> inputs = {pitch_tensor.to(torch::kFloat32), loudness_tensor.to(torch::kFloat32)};
-//        std::cout << inputs << std::endl;
 
         auto out_tensor = m_scripted_model.forward(inputs);
-        auto harmonic_amplitudes = out_tensor.toTuple()->elements()[0].toTensor();
-        auto filter_magnitudes = out_tensor.toTuple()->elements()[1].toTensor();
-        std::cout << harmonic_amplitudes << std::endl;
-//        std::cout << filter_magnitudes << std::endl;
+        auto harmonic_amplitudes_tensor = out_tensor.toTuple()->elements()[0].toTensor().to(torch::kFloat64);
+        auto filter_magnitudes_tensor = out_tensor.toTuple()->elements()[1].toTensor().to(torch::kFloat64);
+
+        // upsampling / interpolation
+        namespace F = torch::nn::functional;
+        harmonic_amplitudes_tensor = harmonic_amplitudes_tensor.contiguous();
+        harmonic_amplitudes_tensor = harmonic_amplitudes_tensor.permute({0, 2, 1}); // permute: switch rows and columns, rows = harmonics, columns = samples
+        harmonic_amplitudes_tensor = F::interpolate(harmonic_amplitudes_tensor, F::InterpolateFuncOptions()
+                                                    .size(std::vector<int64_t>{harmonic_amplitudes_tensor.size(2) * buffer_size})
+                                                    .mode(torch::kNearest));
+//        harmonic_amplitudes_tensor = harmonic_amplitudes_tensor.permute({0, 2, 1});
+        harmonic_amplitudes_tensor = torch::flatten(harmonic_amplitudes_tensor, 1);
         
-//        auto out = out_tensor.contiguous().data_ptr<float>();
-//        memcpy(out_buffer, out, buffer_size * sizeof(float));
+        pitch_tensor = pitch_tensor.contiguous();
+        pitch_tensor = pitch_tensor.permute({0, 2, 1});
+        pitch_tensor = F::interpolate(pitch_tensor, F::InterpolateFuncOptions()
+                                                    .size(std::vector<int64_t>{pitch_tensor.size(2) * buffer_size})
+                                                    .mode(torch::kNearest));
+        pitch_tensor = pitch_tensor.permute({0, 2, 1});
+        pitch_tensor = torch::flatten(pitch_tensor);
+        
+        // Copy to output buffers
+        auto harmonic_amplitudes_ptr = harmonic_amplitudes_tensor.contiguous().data_ptr<double>();
+        memcpy(harmonic_amplitudes, harmonic_amplitudes_ptr, buffer_size * N_HARMONICS * sizeof(double));
+        
+        auto pitch_ptr = pitch_tensor.contiguous().data_ptr<double>();
+        memcpy(f0, pitch_ptr, buffer_size * sizeof(double));
     }
 }
 
-class ddsp_decoder_controls_tilde : public object<ddsp_decoder_controls_tilde>, public vector_operator<> {
+class ddsp_decoder_controls_tilde : public object<ddsp_decoder_controls_tilde>, public mc_operator<> {
 public:
     MIN_DESCRIPTION	{ "DDSP decoder controls~." };
     MIN_TAGS		{ "DDSP" };
@@ -83,15 +104,15 @@ public:
     MIN_RELATED		{ "" };
 
     // execute the ddsp computation in a separate thread
-    void thread_perform(double *pitch, double *loudness, float *out_buffer, int buffer_size)
+    void thread_perform(double *pitch, double *loudness, double *f0, double *harmonic_amplitudes, int buffer_size)
     {
-        model->perform(pitch, loudness, out_buffer, buffer_size);
+        m_model->perform(pitch, loudness, f0, harmonic_amplitudes, buffer_size);
     }
 
     // constructor
     ddsp_decoder_controls_tilde(const atoms& args = {}) {
         // to ensure safety in possible attribute settings
-        model = new DDSPModel;
+        m_model = new DDSPModel;
         
         if (args.empty()) {
           error("Please specify the input model path as argument.");
@@ -99,18 +120,22 @@ public:
         else {
             cout << "Loading model..." << endl;
             symbol model_path = args[0]; // the first argument specifies the path
-            int model_is_loaded = model->load(model_path); // try to load the model
+            int model_is_loaded = m_model->load(model_path); // try to load the model
             
             if (model_is_loaded) { // if loaded correctly
             
                 // configure inlets and outlets
-                auto input_pitch_frequency = std::make_unique<inlet<>>(this, "(signal) pitch frequency");
-                auto input_loudness = std::make_unique<inlet<>>(this, "(signal) loudness");
-                auto output_ddsp = std::make_unique<outlet<>>(this, "(signal) ddsp out", "signal");
+                auto in_pitch_frequency = std::make_unique<inlet<>>(this, "(signal) pitch frequency");
+                auto in_loudness = std::make_unique<inlet<>>(this, "(signal) loudness");
+                auto out_fundamental_frequency = std::make_unique<outlet<>>(this, "(multichannelsignal) fundamental frequency", "multichannelsignal");
+                auto out_harmonic_amplitudes = std::make_unique<outlet<>>(this, "(multichannelsignal) harmonic amplitudes", "multichannelsignal");
+                auto out_filter_magnitudes = std::make_unique<outlet<>>(this, "(multichannelsignal) filter magnitudes", "multichannelsignal");
                 
-                m_inlets.push_back( std::move(input_pitch_frequency) );
-                m_inlets.push_back( std::move(input_loudness) );
-                m_outlets.push_back( std::move(output_ddsp) );
+                m_inlets.push_back( std::move(in_pitch_frequency) );
+                m_inlets.push_back( std::move(in_loudness) );
+                m_outlets.push_back( std::move(out_fundamental_frequency) );
+                m_outlets.push_back( std::move(out_harmonic_amplitudes) );
+                m_outlets.push_back( std::move(out_filter_magnitudes) );
             
                 cout << "Model loaded successfully" << endl;
             }
@@ -124,34 +149,58 @@ public:
         
         int n = input.frame_count();
         
-        memcpy(pitch_buffer + head, input.samples(0), n * sizeof(double));
-        memcpy(loudness_buffer + head, input.samples(1), n * sizeof(double));
-//        memcpy(output.samples(0), out_buffer + head, output.frame_count() * sizeof(float));
+        memcpy(m_pitch_buffer + m_head, input.samples(0), n * sizeof(double));
+        memcpy(m_loudness_buffer + m_head, input.samples(1), n * sizeof(double));
+        memcpy(output.samples(0), m_f0_buffer + m_head, output.frame_count() * sizeof(double));
         
-        head += n; // progress with the head
-        
-        if (!(head % B_SIZE)) { // if it is B_SIZE or B_SIZE * 2
-            if (compute_thread) {
-                compute_thread->join();
+        // Copy harmonics into according channels
+        for (int harmonic = 0; harmonic < N_HARMONICS; harmonic++) {
+            int ch = harmonic + 1;
+            int offset = harmonic * B_SIZE + m_head % B_SIZE; // point to buffer location of each harmonic
+            if (m_head >= B_SIZE) { // point to next part of the buffer
+                offset += N_HARMONICS * B_SIZE;
             }
-            model_head = ((head + B_SIZE) % (2 * B_SIZE)); // points to the next / previous B_SIZE spaces available
-            compute_thread = new std::thread(&ddsp_decoder_controls_tilde::thread_perform, this,
-                                            pitch_buffer + model_head,
-                                            loudness_buffer + model_head,
-                                            out_buffer + model_head,
+            memcpy(output.samples(ch), m_harmonic_amplitudes_buffer + offset, output.frame_count() * sizeof(double));
+        }
+        
+        m_head += n; // progress with the m_head
+        
+        if (!(m_head % B_SIZE)) { // if it is B_SIZE or B_SIZE * 2
+            if (m_compute_thread) {
+                m_compute_thread->join();
+            }
+            m_model_head = ((m_head + B_SIZE) % (2 * B_SIZE)); // points to the next / previous B_SIZE spaces available
+            m_compute_thread = new std::thread(&ddsp_decoder_controls_tilde::thread_perform, this,
+                                            m_pitch_buffer + m_model_head,
+                                            m_loudness_buffer + m_model_head,
+                                            m_f0_buffer + m_model_head,
+                                            m_harmonic_amplitudes_buffer + N_HARMONICS * m_model_head,
                                             B_SIZE); // compute the buffers in a separate thread
 
-            head = head % (2 * B_SIZE); // set the head to the next available value
+            m_head = m_head % (2 * B_SIZE); // set the m_head to the next available value
         }
     }
         
     // when object is loaded the first time
     message<> maxclass_setup { this, "maxclass_setup",
         MIN_FUNCTION {
-            cout << "DDSP decoder~ loaded" << endl;
+            cout << "DDSP decoder controls~ loaded" << endl;
+            auto class_ptr = args[0];
+//            auto c = max::class_findbyname(max::gensym("box"), max::gensym("ddsp.decoder_controls~"));
+            max::class_addmethod(class_ptr, (max::method)set_out_channels, "multichanneloutputs", max::A_CANT, 0);
             return {};
         }
     };
+        
+    static long set_out_channels(void* obj, long outletindex) {
+        int num_channels = 1; // f0
+        if (outletindex == 1)
+            num_channels = 100; // harmonic amplitudes
+        if (outletindex == 2)
+            num_channels = 65; // filter mangitudes
+        return num_channels;
+    }
+
 
 private:
     // inlets and outlets that will be defined at runtime
@@ -159,19 +208,23 @@ private:
     std::vector< std::unique_ptr<outlet<>> > m_outlets;
 
     // controller variables for the model
-    DDSPModel *model { nullptr };
+    DDSPModel *m_model { nullptr };
+    
+    const static int m_num_harmonics = 100;
 
     // buffers
-    double pitch_buffer[2 * B_SIZE];
-    double loudness_buffer[2 * B_SIZE];
-    float out_buffer[2 * B_SIZE];
+    double m_pitch_buffer[2 * B_SIZE];
+    double m_loudness_buffer[2 * B_SIZE];
+    double m_f0_buffer[2 * B_SIZE];
+    double m_harmonic_amplitudes_buffer[2 * B_SIZE * N_HARMONICS];
+    double m_filter_magnitudes_buffer[2 * B_SIZE][65];
 
     // variable to store the position in the buffer
-    int head {0};
-    int model_head {0};
+    int m_head {0};
+    int m_model_head {0};
 
     // pointer to run a different thread for the ddsp computation
-    std::thread *compute_thread;
+    std::thread *m_compute_thread;
 };
 
 

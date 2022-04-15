@@ -153,14 +153,16 @@ public:
         memcpy(m_loudness_buffer + m_head, input.samples(1), n * sizeof(double));
         memcpy(output.samples(0), m_f0_buffer + m_head, output.frame_count() * sizeof(double));
         
+        int offset = m_head % B_SIZE;
+        if (m_head >= B_SIZE) { // point to next part of the buffer
+            offset += N_HARMONICS * B_SIZE;
+        }
+        
         // Copy harmonics into according channels
         for (int harmonic = 0; harmonic < N_HARMONICS; harmonic++) {
             int ch = harmonic + 1;
-            int offset = harmonic * B_SIZE + m_head % B_SIZE; // point to buffer location of each harmonic
-            if (m_head >= B_SIZE) { // point to next part of the buffer
-                offset += N_HARMONICS * B_SIZE;
-            }
             memcpy(output.samples(ch), m_harmonic_amplitudes_buffer + offset, output.frame_count() * sizeof(double));
+            offset += B_SIZE;
         }
         
         m_head += n; // progress with the m_head

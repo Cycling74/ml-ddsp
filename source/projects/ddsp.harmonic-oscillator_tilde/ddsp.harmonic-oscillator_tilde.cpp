@@ -53,13 +53,13 @@ public:
         auto harmonic_amplitudes_tensor = inputs.index({"...", Slice(1, None)});
         
         // compute instantaneous phase and save initial phases
-        auto omega = torch::cumsum(2 * M_PI * m_one_over_samplerate * fundamental_frequency_tensor, 1);
+        auto omega = torch::cumsum(2 * M_PI * m_one_over_samplerate * fundamental_frequency_tensor, 0);
         omega = torch::add(omega, m_phase);
         m_phase = omega[signal_vector_size-1] % (2 * M_PI);
-        auto omega_harmonics = torch::mul(omega, torch::arange(m_num_harmonics).to(omega));
+        auto omega_harmonics = torch::mul(omega, torch::arange(1, m_num_harmonics + 1).to(omega));
         
         // generate harmonic sinusoids and add
-        auto harmonic_signal = torch::sum(1 * torch::sin(omega_harmonics), 1); // TODO: incorporate total amplitude (1)
+        auto harmonic_signal = torch::sum(1 * torch::sin(omega_harmonics), -1); // TODO: incorporate total amplitude (1)
         
         // copy to outlet
         auto harmonic_signal_ptr = harmonic_signal.contiguous().data_ptr<double>();

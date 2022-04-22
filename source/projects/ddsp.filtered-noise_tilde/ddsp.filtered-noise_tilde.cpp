@@ -64,9 +64,7 @@ public:
         // shift zero-frequency component to center of the spectrum to retrieve an even IR
         // even IR is necessary to design a zero-phase filter that has the advantage of no phase distortion
         // pseudo real-time because zero-phase filters are non-causal
-        std::cout << (int)floor(impulse_response_size / 2.0) << std::endl;
-        impulse_response = torch::roll(impulse_response, (int)floor(impulse_response_size / 2.0), -1);
-        std::cout << impulse_response << std::endl;
+        impulse_response = torch::roll(impulse_response, (int)floor(impulse_response_size * 0.5), -1);
         
         // use hann window to time-limit desired impulse response
         auto window = torch::hann_window(impulse_response_size, options);

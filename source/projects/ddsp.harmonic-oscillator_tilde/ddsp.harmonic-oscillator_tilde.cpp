@@ -24,9 +24,9 @@ public:
     MIN_AUTHOR		{ "Cycling '74" };
     MIN_RELATED		{ "" };
     
-    inlet<> in_pitch { this, "(signal) fundamental frequency" };
-    inlet<> in_harmonic_amplitudes { this, "(multichannelsignal) harmonic amplitudes" };
-    outlet<> out_signal        { this, "(signal) audio output", "signal", };
+    inlet<> in_pitch                { this, "(signal) fundamental frequency" };
+    inlet<> in_harmonic_amplitudes  { this, "(multichannelsignal) harmonic amplitudes" };
+    outlet<> out_signal             { this, "(signal) audio output", "signal", };
     
     message<> dspsetup { this, "dspsetup",
         MIN_FUNCTION {
@@ -42,15 +42,13 @@ public:
         auto options = torch::TensorOptions().dtype(torch::kFloat64);
         auto zero_tensor = torch::zeros({signal_vector_size, m_num_harmonics});
         
-        // read input channels and convert to tensors
-        auto inputs = torch::from_blob(input.samples(0), {signal_vector_size, 1}, options); // ch 0: f0, ch 1-101: harmonics
+        // read input channels and convert to tensors (ch 0: f0, ch 1-101: harmonics)
+        auto fundamental_frequency_tensor = torch::from_blob(input.samples(0), {signal_vector_size, 1}, options);
+        auto harmonic_amplitudes_tensor = zero_tensor;
         for (int i = 0; i < m_num_harmonics; ++i) {
             auto harmonic_amplitudes = torch::from_blob(input.samples(i+1), {signal_vector_size, 1}, options);
-            inputs = torch::cat({inputs, harmonic_amplitudes}, 1);
+            harmonic_amplitudes_tensor.index_put_({"...", Slice(i, i+1)}, harmonic_amplitudes);
         }
-        
-        auto fundamental_frequency_tensor = inputs.index({"...", Slice(None, 1)});
-        auto harmonic_amplitudes_tensor = inputs.index({"...", Slice(1, None)});
         
         // compute instantaneous phase and save initial phases
         auto omega = torch::cumsum(2 * M_PI * m_one_over_samplerate * fundamental_frequency_tensor, 0);
@@ -59,7 +57,7 @@ public:
         auto omega_harmonics = torch::mul(omega, torch::arange(1, m_num_harmonics + 1).to(omega));
         
         // generate harmonic sinusoids and add
-        auto harmonic_signal = torch::sum(1 * torch::sin(omega_harmonics), -1); // TODO: incorporate total amplitude (1)
+        auto harmonic_signal = torch::sum(torch::mul(torch::sin(omega_harmonics), harmonic_amplitudes_tensor), -1);
         
         // copy to outlet
         auto harmonic_signal_ptr = harmonic_signal.contiguous().data_ptr<double>();

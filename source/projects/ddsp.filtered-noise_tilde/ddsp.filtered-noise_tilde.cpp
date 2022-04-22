@@ -39,16 +39,14 @@ public:
         m_num_magnitudes = input.channel_count();
         int signal_vector_size = input.frame_count();
         auto options = torch::TensorOptions().dtype(torch::kFloat64);
-        auto zero_tensor = torch::zeros({signal_vector_size, 1});
+        auto zero_tensor = torch::zeros({signal_vector_size, m_num_magnitudes});
         
-        // read input channels and convert to tensors // TODO: initialize a 2D zero tensor and assign columns via torch::indexing
-        auto inputs = zero_tensor;
+        // read input channels and convert to tensors
+        auto filter_magnitudes_tensor = zero_tensor;
         for (int i = 0; i < m_num_magnitudes; ++i) {
             auto filter_magnitudes = torch::from_blob(input.samples(i), {signal_vector_size, 1}, options);
-            inputs = torch::cat({inputs, filter_magnitudes}, -1);
+            filter_magnitudes_tensor.index_put_({"...", Slice(i, i+1)}, filter_magnitudes);
         }
-
-        auto filter_magnitudes_tensor = inputs.index({"...", Slice(1, None)});
         
         // process one frequency response per signal vector
         filter_magnitudes_tensor = filter_magnitudes_tensor.index({Slice(None, 1), "..."});

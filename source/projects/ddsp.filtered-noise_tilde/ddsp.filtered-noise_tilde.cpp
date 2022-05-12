@@ -14,6 +14,8 @@
 #include <vector>
 #include <stdlib.h>
 
+#define MAX_NUM_MAGNITUDES 65
+
 using namespace c74::min;
 using namespace torch::indexing;
 
@@ -39,17 +41,13 @@ public:
         m_num_magnitudes = input.channel_count();
         int signal_vector_size = input.frame_count();
         auto options = torch::TensorOptions().dtype(torch::kFloat64);
-        auto zero_tensor = torch::zeros({signal_vector_size, m_num_magnitudes});
         
         // read input channels and convert to tensors
-        auto filter_magnitudes_tensor = zero_tensor;
         for (int i = 0; i < m_num_magnitudes; ++i) {
-            auto filter_magnitudes = torch::from_blob(input.samples(i), {signal_vector_size, 1}, options);
-            filter_magnitudes_tensor.index_put_({"...", Slice(i, i+1)}, filter_magnitudes);
+            memcpy(filter_magnitudes + i, input.samples(i), sizeof(double));
         }
-        
-        // process one frequency response per signal vector
-        filter_magnitudes_tensor = filter_magnitudes_tensor.index({Slice(None, 1), "..."});
+
+        auto filter_magnitudes_tensor = torch::from_blob(filter_magnitudes, {1, m_num_magnitudes}, options);
         
         // frequency sampling method
         filter_magnitudes_tensor = torch::stack({filter_magnitudes_tensor, torch::zeros_like(filter_magnitudes_tensor)}, -1);
@@ -67,22 +65,27 @@ public:
         // use hann window to time-limit desired impulse response
         auto window = torch::hann_window(impulse_response_size, options);
         impulse_response = torch::mul(impulse_response, window);
-//        namespace F = torch::nn::functional;
-//        int target_size = 256; // TODO: change to signal vector size
-//        auto pad_options = F::PadFuncOptions({0, (target_size - impulse_response_size)}).mode(torch::kConstant);
-//        impulse_response = torch::nn::functional::pad(impulse_response, pad_options);
+        
+        // pad impulse response to match size of current audio block
+        namespace F = torch::nn::functional;
+        auto pad_options = F::PadFuncOptions({0}).mode(torch::kConstant);
+        int target_size = impulse_response_size;
+        if (signal_vector_size > impulse_response_size) {
+            target_size = signal_vector_size;
+            pad_options = F::PadFuncOptions({0, (target_size - impulse_response_size)}).mode(torch::kConstant);
+            impulse_response = torch::nn::functional::pad(impulse_response, pad_options);
+        }
         
         // shift back IR to causal form
         impulse_response = torch::roll(impulse_response, -(int)floor(impulse_response_size * 0.5), -1);
         
         // generate noise signal
-        auto noise = torch::rand({1, impulse_response_size}).to(impulse_response) * 2 - 1;
+        auto noise = torch::rand({1, target_size}).to(impulse_response) * 2 - 1;
         
         // apply non-windowed non-overlapping STFT/ISTFT to efficiently compute convolution for large impulse response sizes
-        namespace F = torch::nn::functional;
-        auto pad_options = F::PadFuncOptions({impulse_response_size, 0}).mode(torch::kConstant);
+        pad_options = F::PadFuncOptions({target_size, 0}).mode(torch::kConstant);
         impulse_response = torch::nn::functional::pad(impulse_response, pad_options);
-        pad_options = F::PadFuncOptions({0, impulse_response_size}).mode(torch::kConstant);
+        pad_options = F::PadFuncOptions({0, target_size}).mode(torch::kConstant);
         noise = torch::nn::functional::pad(noise, pad_options);
         
         auto filtered_noise = torch::fft::irfft(torch::fft::rfft(noise) * torch::fft::rfft(impulse_response));
@@ -93,7 +96,7 @@ public:
         
         // copy to outlet
         auto filtered_noise_ptr = filtered_noise.contiguous().data_ptr<double>();
-        memcpy(output.samples(0), filtered_noise_ptr, signal_vector_size * sizeof(double)); // output.frame_count() ?
+        memcpy(output.samples(0), filtered_noise_ptr, signal_vector_size * sizeof(double));
     }
         
     // when object is loaded the first time
@@ -108,6 +111,7 @@ private:
     double m_samplerate;
     double m_one_over_samplerate;
     
+    double filter_magnitudes[MAX_NUM_MAGNITUDES] = {};
     torch::Tensor m_phase = torch::zeros({1});
     int m_num_magnitudes;
     

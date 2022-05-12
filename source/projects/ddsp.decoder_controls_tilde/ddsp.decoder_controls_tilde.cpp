@@ -14,7 +14,7 @@
 #include <vector>
 #include <stdlib.h>
 
-#define B_SIZE 256
+#define B_SIZE 1024
 #define N_HARMONICS 100
 #define N_MAGNITUDES 65
 
@@ -80,7 +80,7 @@ void DDSPModel::perform(double *pitch, double *loudness, double *f0, double *har
         pitch_tensor = pitch_tensor.contiguous();
         pitch_tensor = pitch_tensor.permute({0, 2, 1});
         pitch_tensor = F::interpolate(pitch_tensor, F::InterpolateFuncOptions()
-                                                    .size(std::vector<int64_t>{pitch_tensor.size(2) * buffer_size})
+                                                    .size(std::vector<int64_t>{buffer_size})
                                                     .mode(torch::kNearest)); // originally DDSP uses linear method
         pitch_tensor = pitch_tensor.permute({0, 2, 1});
         pitch_tensor = torch::flatten(pitch_tensor);
@@ -88,16 +88,18 @@ void DDSPModel::perform(double *pitch, double *loudness, double *f0, double *har
         harmonic_amplitudes_tensor = harmonic_amplitudes_tensor.contiguous();
         harmonic_amplitudes_tensor = harmonic_amplitudes_tensor.permute({0, 2, 1}); // permute: switch rows and columns, rows = harmonics, columns = samples
         harmonic_amplitudes_tensor = F::interpolate(harmonic_amplitudes_tensor, F::InterpolateFuncOptions()
-                                                    .size(std::vector<int64_t>{harmonic_amplitudes_tensor.size(2) * buffer_size})
+                                                    .size(std::vector<int64_t>{buffer_size})
                                                     .mode(torch::kNearest)); // originally DDSP uses window method
 //        harmonic_amplitudes_tensor = harmonic_amplitudes_tensor.permute({0, 2, 1});
+//        std::cout << harmonic_amplitudes_tensor << std::endl;
         harmonic_amplitudes_tensor = torch::flatten(harmonic_amplitudes_tensor, 1);
         
         filter_magnitudes_tensor = filter_magnitudes_tensor.contiguous();
         filter_magnitudes_tensor = filter_magnitudes_tensor.permute({0, 2, 1});
         filter_magnitudes_tensor = F::interpolate(filter_magnitudes_tensor, F::InterpolateFuncOptions()
-                                                    .size(std::vector<int64_t>{filter_magnitudes_tensor.size(2) * buffer_size})
+                                                    .size(std::vector<int64_t>{buffer_size})
                                                     .mode(torch::kNearest));
+//        std::cout << filter_magnitudes_tensor << std::endl;
         filter_magnitudes_tensor = torch::flatten(filter_magnitudes_tensor, 1);
         
         // Copy to output buffers

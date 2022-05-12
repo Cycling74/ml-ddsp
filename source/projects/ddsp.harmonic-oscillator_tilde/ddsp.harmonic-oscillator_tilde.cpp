@@ -14,6 +14,8 @@
 #include <vector>
 #include <stdlib.h>
 
+#define MAX_NUM_HARMONICS 100
+
 using namespace c74::min;
 using namespace torch::indexing;
 
@@ -32,6 +34,9 @@ public:
         MIN_FUNCTION {
             m_samplerate = (float)args[0];
             m_one_over_samplerate = 1.0 / m_samplerate;
+            int vector_size = args[1];
+            delete [] harmonic_amplitudes;
+            harmonic_amplitudes = new double[MAX_NUM_HARMONICS * vector_size];
             return {};
         }
     };
@@ -40,15 +45,16 @@ public:
         m_num_harmonics = input.channel_count() - 1;
         int signal_vector_size = input.frame_count();
         auto options = torch::TensorOptions().dtype(torch::kFloat64);
-        auto zero_tensor = torch::zeros({signal_vector_size, m_num_harmonics});
         
         // read input channels and convert to tensors (ch 0: f0, ch 1-101: harmonics)
         auto fundamental_frequency_tensor = torch::from_blob(input.samples(0), {signal_vector_size, 1}, options);
-        auto harmonic_amplitudes_tensor = zero_tensor;
+        
         for (int i = 0; i < m_num_harmonics; ++i) {
-            auto harmonic_amplitudes = torch::from_blob(input.samples(i+1), {signal_vector_size, 1}, options);
-            harmonic_amplitudes_tensor.index_put_({"...", Slice(i, i+1)}, harmonic_amplitudes);
+            memcpy(harmonic_amplitudes + i*signal_vector_size, input.samples(i+1), signal_vector_size * sizeof(double));
         }
+
+        auto harmonic_amplitudes_tensor = torch::from_blob(harmonic_amplitudes, {m_num_harmonics, signal_vector_size}, options);
+        harmonic_amplitudes_tensor = harmonic_amplitudes_tensor.permute({1, 0});
         
         // compute instantaneous phase and save initial phases
         auto omega = torch::cumsum(2 * M_PI * m_one_over_samplerate * fundamental_frequency_tensor, 0);
@@ -76,6 +82,7 @@ private:
     double m_samplerate;
     double m_one_over_samplerate;
     
+    double* harmonic_amplitudes = NULL;
     torch::Tensor m_phase = torch::zeros({1});
     int m_num_harmonics;
     

@@ -6,8 +6,8 @@
 
 <c74object name='ddsp.harmonic-oscillator~' category='DDSP'>
 
-	<digest>DDSP decoder controls~</digest>
-	<description>DDSP decoder controls~. </description>
+	<digest>DDSP harmonic oscillator~</digest>
+	<description>DDSP harmonic oscillator~. </description>
 
 
 	<!--METADATA-->

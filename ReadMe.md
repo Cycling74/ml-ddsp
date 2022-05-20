@@ -1,6 +1,6 @@
-# min-package-template
+# ml-ddsp
 
-Minimal template for creating a package with the min-api.
+A collection of differentiable Max objects based on DDSP using the min-devkit.
 
 ## Structure
 
@@ -20,11 +20,12 @@ You will also need to install a recent version of [CMake](https://cmake.org/down
 
 
 ## Building
+**Note: this repository has only been tested on Mac.**
 
-0. Select "Use this template" and set up your own repository.
-1. Clone your new repository. **You should clone it into Max's Packages folder**. If you clone it elsewhere you will need to make an alias to it in your Packages folder.
+1. Clone the repository **into Max's Packages folder**. If you clone it elsewhere you will need to make an alias to it in your Packages folder.
    The *Packages* folder can be found inside of your *Max 8* folder which is inside of your user's *Documents* folder.
    Make sure you clone recursively so that all sub-modules are properly initiated : `git clone <your repository> --recursive`
+2. Download [LibTorch C++](https://pytorch.org/get-started/locally/), unzip and move the folder into the *source* folder.
 2. In the Terminal or Console app of your choice, change directories (cd) into the min-starter folder you cloned/installed in step 0.
 3. `mkdir build` to create a folder with your various build files
 4. `cd build` to put yourself into that folder
@@ -52,6 +53,15 @@ Having generated the projects, you can now build by opening the .sln file in the
 
 `cmake --build . --config Release`
 
+
+## Real-time Usage
+
+Example patches which use the DDSP Max objects are located in the *patches* folder. The *ddsp_decoder_controls_tilde_example.maxpat* shows how to combine the *decoder_controls~*, *harmonic_oscillator~* and *filtered_noise~* MC objects for latent space exploration and timbre transfer. Two pre-trained models are available in the *models* folder, which were trained on violin and saxophone data using the [URMP dataset](http://www2.ece.rochester.edu/projects/air/projects/URMP.html). In order to load a model and perform inference, the absolute path to the model needs to be set as argument in *decoder_controls~*.
+
+
+## Training
+
+*to be added*
 
 
 ## Unit Testing

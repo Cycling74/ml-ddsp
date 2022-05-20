@@ -1,0 +1,26 @@
+data:
+  data_location: ./data/sax
+  extension: wav
+  mean_loudness: -12.488306363423666
+  std_loudness: 0.9859805047512052
+model:
+  block_size: 512
+  hidden_size: 512
+  n_bands: 65
+  n_harmonic: 100
+  sampling_rate: 48000
+preprocess:
+  block_size: 512
+  oneshot: false
+  out_dir: ./preprocessed/training_220512
+  sampling_rate: 48000
+  signal_length: 192000
+train:
+  overlap: 0.75
+  scales:
+  - 4096
+  - 2048
+  - 1024
+  - 512
+  - 256
+  - 128

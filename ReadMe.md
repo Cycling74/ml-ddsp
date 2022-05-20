@@ -56,7 +56,7 @@ Having generated the projects, you can now build by opening the .sln file in the
 
 ## Real-time Usage
 
-Example patches which use the DDSP Max objects are located in the *patches* folder. The *ddsp_decoder_controls_tilde_example.maxpat* shows how to combine the *decoder_controls~*, *harmonic_oscillator~* and *filtered_noise~* MC objects for latent space exploration and timbre transfer. Two pre-trained models are available in the *models* folder, which were trained on violin and saxophone data using the [URMP dataset](http://www2.ece.rochester.edu/projects/air/projects/URMP.html). In order to load a model and perform inference, the absolute path to the model needs to be set as argument in *decoder_controls~*.
+Example patches which use the DDSP Max objects are located in the *patches* folder. The *ddsp_decoder_controls_tilde_example.maxpat* shows how to combine the *decoder_controls~*, *harmonic_oscillator~* and *filtered_noise~* MC objects for latent space exploration and timbre transfer. Two pre-trained models that are compatible with the *decoder_controls~* object are available in the according *models/decoder_controls_models* folder, which were trained on violin and saxophone data using the [URMP dataset](http://www2.ece.rochester.edu/projects/air/projects/URMP.html). In order to load a model and perform inference, the absolute path to the model needs to be set as argument in *decoder_controls~*.
 
 
 ## Training

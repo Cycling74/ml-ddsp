@@ -33,6 +33,7 @@ public:
         MIN_FUNCTION {
             m_samplerate = (float)args[0];
             m_one_over_samplerate = 1.0 / m_samplerate;
+            memset(filter_magnitudes, 0, sizeof(filter_magnitudes));
             return {};
         }
     };
@@ -47,7 +48,7 @@ public:
             memcpy(filter_magnitudes + i, input.samples(i), sizeof(double));
         }
 
-        auto filter_magnitudes_tensor = torch::from_blob(filter_magnitudes, {1, m_num_magnitudes}, options);
+        auto filter_magnitudes_tensor = torch::from_blob(filter_magnitudes, {1, MAX_NUM_MAGNITUDES}, options);
         
         // frequency sampling method
         filter_magnitudes_tensor = torch::stack({filter_magnitudes_tensor, torch::zeros_like(filter_magnitudes_tensor)}, -1);

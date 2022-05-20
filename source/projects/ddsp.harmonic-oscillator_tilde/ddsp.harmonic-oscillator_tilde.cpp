@@ -37,6 +37,7 @@ public:
             int vector_size = args[1];
             delete [] harmonic_amplitudes;
             harmonic_amplitudes = new double[MAX_NUM_HARMONICS * vector_size];
+            memset(harmonic_amplitudes, 0, MAX_NUM_HARMONICS * vector_size * sizeof(*harmonic_amplitudes));
             return {};
         }
     };
@@ -53,7 +54,7 @@ public:
             memcpy(harmonic_amplitudes + i*signal_vector_size, input.samples(i+1), signal_vector_size * sizeof(double));
         }
 
-        auto harmonic_amplitudes_tensor = torch::from_blob(harmonic_amplitudes, {m_num_harmonics, signal_vector_size}, options);
+        auto harmonic_amplitudes_tensor = torch::from_blob(harmonic_amplitudes, {MAX_NUM_HARMONICS, signal_vector_size}, options);
         harmonic_amplitudes_tensor = harmonic_amplitudes_tensor.permute({1, 0});
         
         // compute instantaneous phase and save initial phases

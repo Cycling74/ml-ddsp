@@ -57,6 +57,11 @@ public:
         auto harmonic_amplitudes_tensor = torch::from_blob(harmonic_amplitudes, {MAX_NUM_HARMONICS, signal_vector_size}, options);
         harmonic_amplitudes_tensor = harmonic_amplitudes_tensor.permute({1, 0});
         
+        // remove harmonics above nyquist
+        auto fundamental_frequencies = torch::mul(fundamental_frequency_tensor, torch::reshape(torch::arange(1, m_num_harmonics + 1), {1, m_num_harmonics}));
+        harmonic_amplitudes_tensor = torch::where(fundamental_frequencies < m_samplerate/2.0, harmonic_amplitudes_tensor, 0.0);
+        // harmonic_amplitudes_tensor = harmonic_amplitudes_tensor + 0.0001;
+        
         // compute instantaneous phase and save initial phases
         auto omega = torch::cumsum(2 * M_PI * m_one_over_samplerate * fundamental_frequency_tensor, 0);
         omega = torch::add(omega, m_phase);

@@ -17,7 +17,7 @@
 #define B_SIZE 1024
 #define N_HARMONICS 100
 #define N_MAGNITUDES 65
-#define N_MFCCS 30
+#define N_MFCCS 3
 
 using namespace c74::min;
 namespace max = c74::max;

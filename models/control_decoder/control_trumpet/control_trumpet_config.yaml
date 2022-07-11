@@ -1,0 +1,37 @@
+data:
+  data_location: ./data/trumpet
+  extension: wav
+  mean_loudness: -12.772079944610592
+  std_loudness: 1.0177335681186783
+export:
+  out_dir: ./export
+  realtime: true
+model:
+  block_size: 512
+  hidden_size: 512
+  n_bands: 65
+  n_harmonic: 100
+  sampling_rate: 48000
+preprocess:
+  block_size: 512
+  oneshot: false
+  out_dir: ./preprocess
+  sampling_rate: 48000
+  signal_length: 192000
+train:
+  batch_size: 16
+  decay: 400000
+  eval_steps: 100
+  learning_rate_start: 0.001
+  learning_rate_stop: 0.0001
+  model_name: control_trumpet
+  out_dir: ./train
+  overlap: 0.75
+  scales:
+  - 4096
+  - 2048
+  - 1024
+  - 512
+  - 256
+  - 128
+  steps: 50000

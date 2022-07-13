@@ -40,12 +40,59 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-55",
+					"linecount" : 2,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 66.0, 925.085585594177246, 77.0, 33.0 ],
+					"presentation_linecount" : 2,
+					"text" : "enable / disable DSP"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-14",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 58.0, 792.0, 85.0, 20.0 ],
+					"text" : "unmute / mute"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-56",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 112.5, 380.0, 31.0, 22.0 ],
+					"text" : "load"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-4",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 8.5, 354.585585594177246, 135.0, 20.0 ],
+					"text" : "load control model (*.ts)"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-54",
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 361.514999499999931, 584.5, 217.0, 20.0 ],
-					"text" : "Click to load learned impulse response"
+					"text" : "click to load learned impulse response"
 				}
 
 			}
@@ -56,7 +103,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 201.0, 584.5, 141.0, 20.0 ],
-					"text" : "Double click to open GUI"
+					"text" : "double click to open GUI"
 				}
 
 			}
@@ -266,7 +313,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 152.985000500000069, 73.0, 173.0, 33.0 ],
-					"text" : "OPTION 1:\nParameter space exploration"
+					"text" : "OPTION 1:\nParameter Space Exploration"
 				}
 
 			}
@@ -278,7 +325,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 1034.985000500000069, 71.0, 89.0, 33.0 ],
-					"text" : "OPTION 3:\nMIDI control"
+					"text" : "OPTION 3:\nMIDI Control"
 				}
 
 			}
@@ -289,8 +336,8 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 586.985000500000069, 73.0, 89.0, 33.0 ],
-					"text" : "OPTION 2:\nTimbre transfer"
+					"patching_rect" : [ 586.985000500000069, 73.0, 93.0, 33.0 ],
+					"text" : "OPTION 2:\nTimbre Transfer"
 				}
 
 			}
@@ -365,7 +412,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 586.985000500000069, 164.5, 98.0, 33.0 ],
-					"text" : "pitch / loudness tracking"
+					"text" : "Pitch / loudness tracking"
 				}
 
 			}
@@ -522,36 +569,13 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-14",
-					"linecount" : 2,
-					"maxclass" : "comment",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 38.5, 432.585585594177246, 105.0, 33.0 ],
-					"text" : "arg: insert path to control model *.ts"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-20",
-					"maxclass" : "comment",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 79.0, 786.0, 60.0, 20.0 ],
-					"text" : "ON / OFF"
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"id" : "obj-18",
 					"maxclass" : "toggle",
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "int" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 79.0, 810.0, 24.0, 24.0 ]
+					"patching_rect" : [ 119.0, 816.0, 24.0, 24.0 ]
 				}
 
 			}
@@ -621,9 +645,9 @@
 					"maxclass" : "newobj",
 					"numinlets" : 2,
 					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 153.0, 438.085585594177246, 246.0, 22.0 ],
-					"text" : "ddsp.audio-decoder~ <path-to-audio-model>"
+					"outlettype" : [ "signal" ],
+					"patching_rect" : [ 153.0, 438.085585594177246, 122.0, 22.0 ],
+					"text" : "ddsp.audio-decoder~"
 				}
 
 			}
@@ -682,7 +706,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-12", 0 ],
-					"midpoints" : [ 88.5, 851.0, 163.0, 851.0 ],
+					"midpoints" : [ 128.5, 851.0, 163.0, 851.0 ],
 					"source" : [ "obj-18", 0 ]
 				}
 
@@ -808,6 +832,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-2", 0 ],
 					"source" : [ "obj-48", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-1", 0 ],
+					"source" : [ "obj-56", 0 ]
 				}
 
 			}
@@ -1052,6 +1083,10 @@
 			}
 , 			{
 				"name" : "bufresample~.mxo",
+				"type" : "iLaX"
+			}
+, 			{
+				"name" : "ddsp.audio-decoder~.mxo",
 				"type" : "iLaX"
 			}
 , 			{

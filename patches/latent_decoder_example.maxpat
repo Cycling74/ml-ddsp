@@ -40,12 +40,58 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-56",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 111.014999499999931, 387.0, 31.0, 22.0 ],
+					"text" : "load"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-14",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 7.014999499999931, 361.585585594177246, 135.0, 20.0 ],
+					"text" : "load control model (*.ts)"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-55",
+					"linecount" : 2,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 65.014999499999931, 1085.085585594177246, 77.0, 33.0 ],
+					"text" : "enable / disable DSP"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-20",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 57.014999499999931, 954.0, 85.0, 20.0 ],
+					"text" : "unmute / mute"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-54",
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 360.529998999999862, 739.5, 217.0, 20.0 ],
-					"text" : "Click to load learned impulse response"
+					"text" : "click to load learned impulse response"
 				}
 
 			}
@@ -56,7 +102,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 200.014999499999931, 739.5, 141.0, 20.0 ],
-					"text" : "Double click to open GUI"
+					"text" : "double click to open GUI"
 				}
 
 			}
@@ -99,24 +145,12 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-14",
-					"linecount" : 2,
-					"maxclass" : "comment",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 37.0, 431.585585594177246, 106.0, 33.0 ],
-					"text" : "arg: insert path to control model *.ts"
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"id" : "obj-21",
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 152.014999499999931, 74.0, 201.0, 20.0 ],
-					"text" : "Model Parameters: pitch & loudness"
+					"patching_rect" : [ 152.014999499999931, 74.0, 210.0, 20.0 ],
+					"text" : "Model Parameters: Pitch & Loudness"
 				}
 
 			}
@@ -413,24 +447,13 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-20",
-					"maxclass" : "comment",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 82.014999499999931, 957.0, 60.0, 20.0 ],
-					"text" : "ON / OFF"
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"id" : "obj-18",
 					"maxclass" : "toggle",
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "int" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 82.014999499999931, 983.0, 24.0, 24.0 ]
+					"patching_rect" : [ 118.014999499999931, 979.0, 24.0, 24.0 ]
 				}
 
 			}
@@ -500,9 +523,9 @@
 					"maxclass" : "newobj",
 					"numinlets" : 3,
 					"numoutlets" : 3,
-					"outlettype" : [ "", "", "" ],
-					"patching_rect" : [ 152.014999499999931, 437.085585594177246, 246.0, 22.0 ],
-					"text" : "ddsp.latent-decoder~ <path-to-latent-model>"
+					"outlettype" : [ "multichannelsignal", "multichannelsignal", "multichannelsignal" ],
+					"patching_rect" : [ 152.014999499999931, 437.085585594177246, 122.0, 22.0 ],
+					"text" : "ddsp.latent-decoder~"
 				}
 
 			}
@@ -547,7 +570,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-12", 0 ],
-					"midpoints" : [ 91.514999499999931, 1022.0, 161.514999499999931, 1022.0 ],
+					"midpoints" : [ 127.514999499999931, 1022.0, 161.514999499999931, 1022.0 ],
 					"source" : [ "obj-18", 0 ]
 				}
 
@@ -657,6 +680,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-8", 0 ],
 					"source" : [ "obj-5", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-1", 0 ],
+					"source" : [ "obj-56", 0 ]
 				}
 
 			}
@@ -912,6 +942,10 @@
 			}
 , 			{
 				"name" : "ddsp.filtered-noise~.mxo",
+				"type" : "iLaX"
+			}
+, 			{
+				"name" : "ddsp.latent-decoder~.mxo",
 				"type" : "iLaX"
 			}
 , 			{

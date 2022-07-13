@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 100.0, 750.0, 728.0 ],
+		"rect" : [ 34.0, 90.0, 750.0, 728.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -40,13 +40,37 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-55",
+					"linecount" : 2,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 72.0, 1003.085585594177246, 77.0, 33.0 ],
+					"presentation_linecount" : 2,
+					"text" : "enable / disable DSP"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-56",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 124.0, 379.0, 31.0, 22.0 ],
+					"text" : "load"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-54",
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 367.514999499999931, 702.5, 216.0, 20.0 ],
-					"presentation_linecount" : 2,
-					"text" : "Click to load learned impulse response"
+					"text" : "click to load learned impulse response"
 				}
 
 			}
@@ -57,8 +81,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 207.0, 702.5, 141.0, 20.0 ],
-					"presentation_linecount" : 4,
-					"text" : "Double click to open GUI"
+					"text" : "double click to open GUI"
 				}
 
 			}
@@ -196,7 +219,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 97.0, 674.5, 52.0, 20.0 ],
+					"patching_rect" : [ 101.0, 673.5, 48.0, 20.0 ],
 					"text" : "Reverb"
 				}
 
@@ -268,7 +291,8 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 159.0, 69.0, 173.0, 33.0 ],
-					"text" : "OPTION 1:\nParameter space exploration"
+					"presentation_linecount" : 2,
+					"text" : "OPTION 1:\nParameter Space Exploration"
 				}
 
 			}
@@ -280,7 +304,8 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 1041.0, 67.0, 89.0, 33.0 ],
-					"text" : "OPTION 3:\nMIDI control"
+					"presentation_linecount" : 2,
+					"text" : "OPTION 3:\nMIDI Control"
 				}
 
 			}
@@ -291,8 +316,9 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 593.0, 69.0, 89.0, 33.0 ],
-					"text" : "OPTION 2:\nTimbre transfer"
+					"patching_rect" : [ 593.0, 69.0, 98.0, 33.0 ],
+					"presentation_linecount" : 3,
+					"text" : "OPTION 2:\nTimbre Transfer"
 				}
 
 			}
@@ -402,7 +428,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "signal" ],
-					"patching_rect" : [ 462.0, 495.0, 114.0, 22.0 ],
+					"patching_rect" : [ 367.514999499999931, 495.0, 114.0, 22.0 ],
 					"text" : "ddsp.filtered-noise~"
 				}
 
@@ -415,19 +441,18 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 593.0, 160.5, 98.0, 33.0 ],
-					"text" : "pitch / loudness tracking"
+					"text" : "Pitch / loudness tracking"
 				}
 
 			}
 , 			{
 				"box" : 				{
 					"id" : "obj-14",
-					"linecount" : 2,
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 43.0, 430.585585594177246, 106.0, 33.0 ],
-					"text" : "arg: insert path to control model *.ts"
+					"patching_rect" : [ 20.0, 353.585585594177246, 135.0, 20.0 ],
+					"text" : "load control model (*.ts)"
 				}
 
 			}
@@ -472,8 +497,9 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 89.0, 875.0, 60.0, 20.0 ],
-					"text" : "ON / OFF"
+					"patching_rect" : [ 64.0, 872.0, 85.0, 20.0 ],
+					"presentation_linecount" : 3,
+					"text" : "unmute / mute"
 				}
 
 			}
@@ -485,7 +511,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "int" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 89.0, 901.0, 24.0, 24.0 ]
+					"patching_rect" : [ 125.0, 897.0, 24.0, 24.0 ]
 				}
 
 			}
@@ -603,9 +629,9 @@
 					"maxclass" : "newobj",
 					"numinlets" : 2,
 					"numoutlets" : 3,
-					"outlettype" : [ "", "", "" ],
-					"patching_rect" : [ 159.0, 436.085585594177246, 260.0, 22.0 ],
-					"text" : "ddsp.control-decoder~ <path-to-control-model>"
+					"outlettype" : [ "multichannelsignal", "multichannelsignal", "multichannelsignal" ],
+					"patching_rect" : [ 159.0, 436.085585594177246, 128.0, 22.0 ],
+					"text" : "ddsp.control-decoder~"
 				}
 
 			}
@@ -746,7 +772,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-12", 0 ],
-					"midpoints" : [ 98.5, 940.0, 168.5, 940.0 ],
+					"midpoints" : [ 134.5, 940.0, 168.5, 940.0 ],
 					"source" : [ "obj-18", 0 ]
 				}
 
@@ -898,6 +924,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-2", 0 ],
 					"source" : [ "obj-48", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-1", 0 ],
+					"source" : [ "obj-56", 0 ]
 				}
 
 			}
@@ -1142,6 +1175,10 @@
 			}
 , 			{
 				"name" : "bufresample~.mxo",
+				"type" : "iLaX"
+			}
+, 			{
+				"name" : "ddsp.control-decoder~.mxo",
 				"type" : "iLaX"
 			}
 , 			{

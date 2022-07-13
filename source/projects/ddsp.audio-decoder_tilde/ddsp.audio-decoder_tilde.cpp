@@ -17,6 +17,7 @@
 #define B_SIZE 1024
 
 using namespace c74::min;
+namespace max = c74::max;
 
 class DDSPModel
 {
@@ -46,7 +47,7 @@ int DDSPModel::load(std::string path)
     }
     catch (const std::exception &e)
     {
-        std::cout << e.what() << '\n';
+        std::cerr << e.what() << '\n';
         m_model_is_loaded = 0;
         return 0;
     }
@@ -83,39 +84,22 @@ public:
     // execute the ddsp computation in a separate thread
     void thread_perform(double *pitch, double *loudness, double *out_buffer, int buffer_size)
     {
-        model->perform(pitch, loudness, out_buffer, buffer_size);
+        m_model->perform(pitch, loudness, out_buffer, buffer_size);
     }
 
     // constructor
     ddsp_audio_decoder_tilde(const atoms& args = {}) {
         // to ensure safety in possible attribute settings
-        model = new DDSPModel;
+        m_model = new DDSPModel;
+            
+        // configure inlets and outlets
+        auto input_pitch_frequency = std::make_unique<inlet<>>(this, "(signal) pitch frequency");
+        auto input_loudness = std::make_unique<inlet<>>(this, "(signal) loudness");
+        auto output_ddsp = std::make_unique<outlet<>>(this, "(signal) audio out", "signal");
         
-        if (args.empty()) {
-          error("Please specify the input model path as argument.");
-        }
-        else {
-            cout << "Loading model..." << endl;
-            symbol model_path = args[0]; // the first argument specifies the path
-            int model_is_loaded = model->load(model_path); // try to load the model
-            
-            if (model_is_loaded) { // if loaded correctly
-            
-                // configure inlets and outlets
-                auto input_pitch_frequency = std::make_unique<inlet<>>(this, "(signal) pitch frequency");
-                auto input_loudness = std::make_unique<inlet<>>(this, "(signal) loudness");
-                auto output_ddsp = std::make_unique<outlet<>>(this, "(signal) audio out", "signal");
-                
-                m_inlets.push_back( std::move(input_pitch_frequency) );
-                m_inlets.push_back( std::move(input_loudness) );
-                m_outlets.push_back( std::move(output_ddsp) );
-            
-                cout << "Model loaded successfully" << endl;
-            }
-            else {
-                error("Error loading model");
-            }
-        }
+        m_inlets.push_back( std::move(input_pitch_frequency) );
+        m_inlets.push_back( std::move(input_loudness) );
+        m_outlets.push_back( std::move(output_ddsp) );
     }
                     
     void operator()(audio_bundle input, audio_bundle output) {
@@ -153,6 +137,24 @@ public:
             return {};
         }
     };
+    
+    message<> load { this, "load", "Load control model (*.ts).",
+        MIN_FUNCTION {
+            if(max::open_dialog(m_filename, &m_path, &m_type, &m_types[0], static_cast<short>(m_types.size())) == 0)
+            {
+                cout << "Loading model..." << endl;
+                max::path_toabsolutesystempath(m_path, m_filename, m_model_path);
+                int model_is_loaded = m_model->load(m_model_path); // try to load the model
+                if (model_is_loaded) { // if loaded correctly
+                    cout << "Model loaded successfully" << endl;
+                }
+                else {
+                    cerr << "Error loading model" << endl;
+                }
+            }
+            return {};
+        }
+    };
 
 private:
     // inlets and outlets that will be defined at runtime
@@ -160,7 +162,7 @@ private:
     std::vector< std::unique_ptr<outlet<>> > m_outlets;
 
     // controller variables for the model
-    DDSPModel *model { nullptr };
+    DDSPModel *m_model { nullptr };
 
     // buffers
     double pitch_buffer[2 * B_SIZE];
@@ -173,6 +175,13 @@ private:
 
     // pointer to run a different thread for the ddsp computation
     std::thread *compute_thread;
+    
+    // model path
+    short m_path {};
+    char m_filename[MAX_FILENAME_CHARS] {};
+    char m_model_path[MAX_PATH_CHARS] {};
+    max::t_fourcc m_type {};
+    std::vector<max::t_fourcc> m_types {};
 };
 
 

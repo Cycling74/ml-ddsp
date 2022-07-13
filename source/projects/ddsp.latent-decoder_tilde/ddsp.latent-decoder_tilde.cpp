@@ -51,7 +51,7 @@ int DDSPModel::load(std::string path)
     }
     catch (const std::exception &e)
     {
-        std::cout << e.what() << '\n';
+        std::cerr << e.what() << '\n';
         m_model_is_loaded = 0;
         return 0;
     }
@@ -93,8 +93,6 @@ void DDSPModel::perform(double *pitch, double *loudness, double *mfccs, double *
         harmonic_amplitudes_tensor = F::interpolate(harmonic_amplitudes_tensor, F::InterpolateFuncOptions()
                                                     .size(std::vector<int64_t>{buffer_size})
                                                     .mode(torch::kNearest)); // originally DDSP uses window method
-//        harmonic_amplitudes_tensor = harmonic_amplitudes_tensor.permute({0, 2, 1});
-//        std::cout << harmonic_amplitudes_tensor << std::endl;
         harmonic_amplitudes_tensor = torch::flatten(harmonic_amplitudes_tensor, 1);
         
         filter_magnitudes_tensor = filter_magnitudes_tensor.contiguous();
@@ -102,7 +100,6 @@ void DDSPModel::perform(double *pitch, double *loudness, double *mfccs, double *
         filter_magnitudes_tensor = F::interpolate(filter_magnitudes_tensor, F::InterpolateFuncOptions()
                                                     .size(std::vector<int64_t>{buffer_size})
                                                     .mode(torch::kNearest));
-//        std::cout << filter_magnitudes_tensor << std::endl;
         filter_magnitudes_tensor = torch::flatten(filter_magnitudes_tensor, 1);
         
         // Copy to output buffers
@@ -134,38 +131,23 @@ public:
     ddsp_latent_decoder_tilde(const atoms& args = {}) {
         // to ensure safety in possible attribute settings
         m_model = new DDSPModel;
+            
+        // configure inlets and outlets
+        auto in_pitch_frequency = std::make_unique<inlet<>>(this, "(signal) pitch frequency");
+        auto in_loudness = std::make_unique<inlet<>>(this, "(signal) loudness");
+        auto in_mfccs = std::make_unique<inlet<>>(this, "(multichannelsignal) latent mfccs");
+        auto out_fundamental_frequency = std::make_unique<outlet<>>(this, "(multichannelsignal) fundamental frequency", "multichannelsignal");
+        auto out_harmonic_amplitudes = std::make_unique<outlet<>>(this, "(multichannelsignal) harmonic amplitudes", "multichannelsignal");
+        auto out_filter_magnitudes = std::make_unique<outlet<>>(this, "(multichannelsignal) filter magnitudes", "multichannelsignal");
         
-        if (args.empty()) {
-          error("Please specify the input model path as argument.");
-        }
-        else {
-            cout << "Loading model..." << endl;
-            symbol model_path = args[0]; // the first argument specifies the path
-            int model_is_loaded = m_model->load(model_path); // try to load the model
-            
-            if (model_is_loaded) { // if loaded correctly
-            
-                // configure inlets and outlets
-                auto in_pitch_frequency = std::make_unique<inlet<>>(this, "(signal) pitch frequency");
-                auto in_loudness = std::make_unique<inlet<>>(this, "(signal) loudness");
-                auto in_mfccs = std::make_unique<inlet<>>(this, "(multichannelsignal) latent mfccs");
-                auto out_fundamental_frequency = std::make_unique<outlet<>>(this, "(multichannelsignal) fundamental frequency", "multichannelsignal");
-                auto out_harmonic_amplitudes = std::make_unique<outlet<>>(this, "(multichannelsignal) harmonic amplitudes", "multichannelsignal");
-                auto out_filter_magnitudes = std::make_unique<outlet<>>(this, "(multichannelsignal) filter magnitudes", "multichannelsignal");
-                
-                m_inlets.push_back( std::move(in_pitch_frequency) );
-                m_inlets.push_back( std::move(in_loudness) );
-                m_inlets.push_back( std::move(in_mfccs) );
-                m_outlets.push_back( std::move(out_fundamental_frequency) );
-                m_outlets.push_back( std::move(out_harmonic_amplitudes) );
-                m_outlets.push_back( std::move(out_filter_magnitudes) );
-            
-                cout << "Model loaded successfully" << endl;
-            }
-            else {
-                error("Error loading model");
-            }
-        }
+        m_inlets.push_back( std::move(in_pitch_frequency) );
+        m_inlets.push_back( std::move(in_loudness) );
+        m_inlets.push_back( std::move(in_mfccs) );
+        m_outlets.push_back( std::move(out_fundamental_frequency) );
+        m_outlets.push_back( std::move(out_harmonic_amplitudes) );
+        m_outlets.push_back( std::move(out_filter_magnitudes) );
+    
+        cout << "Model loaded successfully" << endl;
     }
     
     void operator()(audio_bundle input, audio_bundle output) {
@@ -241,6 +223,24 @@ public:
             return {};
         }
     };
+    
+    message<> load { this, "load", "Load control model (*.ts).",
+        MIN_FUNCTION {
+            if(max::open_dialog(m_filename, &m_path, &m_type, &m_types[0], static_cast<short>(m_types.size())) == 0)
+            {
+                cout << "Loading model..." << endl;
+                max::path_toabsolutesystempath(m_path, m_filename, m_model_path);
+                int model_is_loaded = m_model->load(m_model_path); // try to load the model
+                if (model_is_loaded) { // if loaded correctly
+                    cout << "Model loaded successfully" << endl;
+                }
+                else {
+                    cerr << "Error loading model" << endl;
+                }
+            }
+            return {};
+        }
+    };
         
     static long set_out_channels(void* obj, long outletindex) {
         int num_channels = 1; // f0
@@ -278,6 +278,13 @@ private:
 
     // pointer to run a different thread for the ddsp computation
     std::thread *m_compute_thread;
+    
+    // model path
+    short m_path {};
+    char m_filename[MAX_FILENAME_CHARS] {};
+    char m_model_path[MAX_PATH_CHARS] {};
+    max::t_fourcc m_type {};
+    std::vector<max::t_fourcc> m_types {};
 };
 
 

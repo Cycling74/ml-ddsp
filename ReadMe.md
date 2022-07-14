@@ -1,6 +1,6 @@
 # ml-ddsp
 
-A collection of differentiable Max objects based on [DDSP](https://github.com/magenta/ddsp) using LibTorch with min-devkit.
+A collection of differentiable Max objects based on [DDSP](https://github.com/magenta/ddsp) and [DDSP PyTorch](https://github.com/acids-ircam/ddsp_pytorch) using LibTorch with min-devkit.
 
 ## Structure
 

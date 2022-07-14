@@ -1,6 +1,6 @@
 # ml-ddsp
 
-A collection of differentiable Max objects based on DDSP using the min-devkit.
+A collection of differentiable Max objects based on [DDSP](https://github.com/magenta/ddsp) using LibTorch with min-devkit.
 
 ## Structure
 
@@ -26,10 +26,10 @@ You will also need to install a recent version of [CMake](https://cmake.org/down
    The *Packages* folder can be found inside of your *Max 8* folder which is inside of your user's *Documents* folder.
    Make sure you clone recursively so that all sub-modules are properly initiated : `git clone <your repository> --recursive`
 2. Download [LibTorch C++](https://pytorch.org/get-started/locally/), unzip and move the folder into the *source* folder.
-2. In the Terminal or Console app of your choice, change directories (cd) into the min-starter folder you cloned/installed in step 0.
-3. `mkdir build` to create a folder with your various build files
-4. `cd build` to put yourself into that folder
-5. Now you can generate the projects for your choosen build environment:
+3. In the Terminal or Console app of your choice, change directories (cd) into the min-starter folder you cloned/installed in step 0.
+4. `mkdir build` to create a folder with your various build files
+5. `cd build` to put yourself into that folder
+6. Now you can generate the projects for your choosen build environment:
 
 ### Mac 
 
@@ -41,27 +41,76 @@ Note: you can add the `-j4` option where "4" is the number of cores to use.  Thi
 
 ### Windows
 
-You can run `cmake --help` to get a list of the options available.  Assuming some version of Visual Studio 2019, the commands to generate the projects will look like this: 
+*not supported yet*
 
-`cmake -G "Visual Studio 16 2019" ..`
+### Third-party dependencies
 
-Or using Visual Studio 2017 it will look like this:
+Apart from LibTorch, there are further third-party Max packages to be installed in order to run the example patches:
 
-`cmake -G "Visual Studio 15 2017 Win64" ..`
-
-Having generated the projects, you can now build by opening the .sln file in the build folder with the Visual Studio app (just double-click the .sln file) or you can build on the command line like this:
-
-`cmake --build . --config Release`
+* `sigmund~` is used for pitch and loudness tracking, and can be retrieved [here](https://github.com/v7b1/sigmund_64bit-version).
+* `hirt.convolver~` from the [HISSTools Impulse Response Toolbox](https://github.com/HISSTools/HISSTools_Impulse_Response_Toolbox) is used for convolution and parametric reverb and can be installed using the package manager within Max.
 
 
-## Real-time Usage
+## Overview
 
-Example patches which use the DDSP Max objects are located in the *patches* folder. The *ddsp_decoder_controls_tilde_example.maxpat* shows how to combine the *decoder_controls~*, *mc-harmonic_oscillator~* and *filtered_noise~* multichannel objects for latent space exploration, timbre transfer and MIDI control. Several pre-trained models that are compatible with the *decoder_controls~* object are available in the according *models/decoder_controls_models* folder, which were trained on the [URMP dataset](http://www2.ece.rochester.edu/projects/air/projects/URMP.html). In order to load a model and perform inference, the absolute path to the model needs to be set as argument in *decoder_controls~*.
+The package contains the following objects, which are all differentiable and can be trained end-to-end:
+
+### Autoencoder Objects
+
+* `ddsp.audio-decoder~`, basic neural decoder that takes pitch and loudness, runs inference on a pre-trained model and outputs an audio signal
+* `ddsp.control-decoder~`, multichannel neural decoder that takes pitch and loudness, runs inference on a pre-trained model and outputs control parameters for additive + subtractive synthesis, i.e. fundamental frequency, harmonic amplitudes and filter magnitudes
+* `ddsp.latent-decoder~`, multichannel neural decoder that takes pitch and loudness, and latent parameters based on MFCCs, runs inference on a pre-trained model and outputs control parameters for additive + subtractive synthesis, i.e. fundamental frequency, harmonic amplitudes and filter magnitudes
+
+### Synthesis Objects
+
+* `ddsp.mc-harmonic-oscillator~`, multichannel additive synthesizer that takes fundamental frequency and harmonic amplitudes and outputs harmonic signals
+* `ddsp.harmonic-oscillator~`, additive synthesizer that takes fundamental frequency and harmonic amplitudes and outputs a mono audio signal
+* `ddsp.filtered-noise~`, subtractive synthesizer that takes filter magnitudes and outputs a mono audio signal
+
+### Reverb
+
+The `hirt.convolver~` is used to convolve the output signal with learned impulse responses which can be further processed and altered (decay, size, pre-delay, gain, eq) within the tool.
+
+### Pre-trained Models
+
+Pre-trained models can be found in the `models/` folder.  A model contains three files:
+* `model.ts`, model in the torschscript file format, containing the architecture and weights of the neural network
+* `impulse.wav`, learned impulse response for (de-)reverberation
+* `config.yaml`, summary of all model parameters and additional configuration
+
+The following models are currently available:
+
+* `models/audio_decoder`
+    * saxophone
+    * violin
+* `models/control_decoder`
+    * cello
+    * doublebass
+    * flute
+    * saxophone
+    * trumpet
+    * violin
+* `models/latent_decoder`
+    * flute
+    * trumpet
+
+These pre-trained models have been trained on acoustic instruments in the [URMP dataset](http://www2.ece.rochester.edu/projects/air/projects/URMP.html). Further explorations of trainings on non-acoustic sound sources will be explored and the collection of pre-trained models will be gradually extended.
+
+### Example Patches
+
+Example patches which use the differentiable Max objects are located in the `patches/` folder. 
+In order to load a compatible model and perform inference, a `load` message has to be sent to the decoder object which opens the file browser to load a torchscript `*.ts` file from the according `models/` folder.
+
+* The `audio_decoder_example.maxpat` shows how to combine the basic *ddsp.audio-decoder~* with reverb for parameter space exploration, timbre transfer and MIDI control. 
+* The `control_decoder_example.maxpat` shows how to combine the *ddsp.control-decoder~*, *ddsp.mc-harmonic_oscillator~* and *ddsp.filtered_noise~* multichannel objects with reverb for parameter space exploration, timbre transfer and MIDI control.
+* The `latent_decoder_example.maxpat` shows how to combine the *ddsp.latent-decoder~*, *ddsp.mc-harmonic_oscillator~* and *ddsp.filtered_noise~* multichannel objects with reverb for parameter space and latent space exploration.
 
 
 ## Training
 
-*for now in a separate repository*
+*currently in a separate repository*
+
+For training of custom models, follow the instructions in the [training repository](https://github.com/rotterbein/ml-ddsp-training/tree/mfcc-autoencoder).
 
 
 ## Unit Testing
@@ -94,7 +143,6 @@ The min-starter project models CI using [Github Actions](https://docs.github.com
 * [Min Wiki](https://github.com/Cycling74/min-devkit/wiki) For additional topics, advanced configuration, and user submissions
 * [How to Create a New Object](./HowTo-NewObject.md)
 * [How to Update the underlying Max API](./HowTo-UpdateTheAPI.md)
-
 
 
 ## Contributors / Acknowledgements

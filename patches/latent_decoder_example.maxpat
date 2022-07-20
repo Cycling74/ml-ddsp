@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 454.0, 79.0, 948.0, 739.0 ],
+		"rect" : [ 454.0, 79.0, 611.0, 737.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,6 +39,276 @@
 		"subpatcher_template" : "",
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
+				"box" : 				{
+					"fontname" : "Arial",
+					"fontsize" : 10.0,
+					"id" : "obj-57",
+					"linecount" : 2,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 831.0, 174.5, 39.0, 29.0 ],
+					"text" : "note on / off",
+					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-51",
+					"maxclass" : "newobj",
+					"numinlets" : 6,
+					"numoutlets" : 1,
+					"outlettype" : [ "signal" ],
+					"patching_rect" : [ 821.0, 267.5, 128.0, 22.0 ],
+					"text" : "scale~ 0. 1. -100. 100."
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-48",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 821.0, 100.5, 103.0, 20.0 ],
+					"text" : "Envelope Control"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-46",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 628.5, 100.5, 88.0, 20.0 ],
+					"text" : "Slider Control"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-36",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 821.0, 345.5, 150.0, 20.0 ],
+					"text" : "connect to decoder inlet 3"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-26",
+					"maxclass" : "newobj",
+					"numinlets" : 3,
+					"numoutlets" : 1,
+					"outlettype" : [ "multichannelsignal" ],
+					"patching_rect" : [ 821.0, 313.0, 70.0, 22.0 ],
+					"text" : "mc.pack~ 3"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-19",
+					"maxclass" : "toggle",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "int" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 821.0, 149.5, 24.0, 24.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Arial",
+					"fontsize" : 13.0,
+					"format" : 6,
+					"id" : "obj-27",
+					"maxclass" : "flonum",
+					"maximum" : 1.0,
+					"minimum" : 0.0,
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "bang" ],
+					"parameter_enable" : 1,
+					"patching_rect" : [ 1054.25, 149.5, 50.0, 23.0 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_initial" : [ 0.5 ],
+							"parameter_initial_enable" : 1,
+							"parameter_invisible" : 1,
+							"parameter_longname" : "flonum",
+							"parameter_mmax" : 1.0,
+							"parameter_shortname" : "flonum",
+							"parameter_type" : 0
+						}
+
+					}
+,
+					"varname" : "flonum"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Arial",
+					"fontsize" : 13.0,
+					"id" : "obj-24",
+					"maxclass" : "number",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "bang" ],
+					"parameter_enable" : 1,
+					"patching_rect" : [ 1132.0, 149.5, 50.0, 23.0 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_initial" : [ 1000 ],
+							"parameter_initial_enable" : 1,
+							"parameter_invisible" : 1,
+							"parameter_longname" : "number[4]",
+							"parameter_shortname" : "number[2]",
+							"parameter_type" : 3
+						}
+
+					}
+,
+					"varname" : "number[3]"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Arial",
+					"fontsize" : 13.0,
+					"id" : "obj-11",
+					"maxclass" : "number",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "bang" ],
+					"parameter_enable" : 1,
+					"patching_rect" : [ 976.5, 149.5, 50.0, 23.0 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_initial" : [ 500 ],
+							"parameter_initial_enable" : 1,
+							"parameter_invisible" : 1,
+							"parameter_longname" : "number[5]",
+							"parameter_shortname" : "number[2]",
+							"parameter_type" : 3
+						}
+
+					}
+,
+					"varname" : "number[2]"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Arial",
+					"fontsize" : 13.0,
+					"id" : "obj-17",
+					"maxclass" : "number",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "bang" ],
+					"parameter_enable" : 1,
+					"patching_rect" : [ 898.75, 149.5, 50.0, 23.0 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_initial" : [ 100 ],
+							"parameter_initial_enable" : 1,
+							"parameter_invisible" : 1,
+							"parameter_longname" : "number[3]",
+							"parameter_shortname" : "number[2]",
+							"parameter_type" : 3
+						}
+
+					}
+,
+					"varname" : "number[1]"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Arial",
+					"fontsize" : 10.0,
+					"id" : "obj-41",
+					"linecount" : 2,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 907.0, 174.5, 38.0, 29.0 ],
+					"text" : "attack (ms)",
+					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Arial",
+					"fontsize" : 10.0,
+					"id" : "obj-43",
+					"linecount" : 2,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 986.5, 174.5, 39.0, 29.0 ],
+					"text" : "decay (ms)",
+					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Arial",
+					"fontsize" : 10.0,
+					"id" : "obj-44",
+					"linecount" : 2,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 1063.0, 174.5, 61.0, 29.0 ],
+					"text" : "sustain gain (0 -1.)",
+					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Arial",
+					"fontsize" : 10.0,
+					"id" : "obj-45",
+					"linecount" : 2,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 1142.0, 174.5, 44.0, 29.0 ],
+					"text" : "release (ms)",
+					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Arial",
+					"fontsize" : 13.0,
+					"id" : "obj-47",
+					"maxclass" : "newobj",
+					"numinlets" : 5,
+					"numoutlets" : 4,
+					"outlettype" : [ "signal", "signal", "", "" ],
+					"patching_rect" : [ 821.0, 214.5, 330.0, 23.0 ],
+					"text" : "adsr~ 100 500 0.5 1000"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-56",
 					"maxclass" : "message",
@@ -160,7 +430,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 687.5, 97.5, 20.0, 20.0 ],
+					"patching_rect" : [ 687.5, 127.5, 20.0, 20.0 ],
 					"text" : "3"
 				}
 
@@ -171,7 +441,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 658.5, 97.5, 20.0, 20.0 ],
+					"patching_rect" : [ 658.5, 127.5, 20.0, 20.0 ],
 					"text" : "2"
 				}
 
@@ -182,7 +452,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 628.5, 97.5, 20.0, 20.0 ],
+					"patching_rect" : [ 628.5, 127.5, 20.0, 20.0 ],
 					"text" : "1"
 				}
 
@@ -193,8 +463,8 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 628.5, 74.0, 161.0, 20.0 ],
-					"text" : "Latent Parameters: MFCCs"
+					"patching_rect" : [ 628.5, 74.0, 212.0, 20.0 ],
+					"text" : "Latent Parameters: Timbre (MFCCs)"
 				}
 
 			}
@@ -204,7 +474,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 628.5, 315.5, 150.0, 20.0 ],
+					"patching_rect" : [ 628.5, 345.5, 150.0, 20.0 ],
 					"text" : "connect to decoder inlet 3"
 				}
 
@@ -216,7 +486,7 @@
 					"numinlets" : 3,
 					"numoutlets" : 1,
 					"outlettype" : [ "multichannelsignal" ],
-					"patching_rect" : [ 628.5, 283.0, 70.0, 22.0 ],
+					"patching_rect" : [ 628.5, 313.0, 70.0, 22.0 ],
 					"text" : "mc.pack~ 3"
 				}
 
@@ -231,7 +501,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 687.5, 119.5, 20.0, 140.0 ],
+					"patching_rect" : [ 687.5, 149.5, 20.0, 140.0 ],
 					"size" : 201.0
 				}
 
@@ -246,7 +516,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 658.5, 119.5, 20.0, 140.0 ],
+					"patching_rect" : [ 658.5, 149.5, 20.0, 140.0 ],
 					"size" : 201.0
 				}
 
@@ -261,7 +531,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 628.5, 119.5, 20.0, 140.0 ],
+					"patching_rect" : [ 628.5, 149.5, 20.0, 140.0 ],
 					"size" : 201.0
 				}
 
@@ -553,6 +823,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-47", 2 ],
+					"source" : [ "obj-11", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-23", 1 ],
 					"order" : 0,
 					"source" : [ "obj-12", 0 ]
@@ -569,6 +846,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-47", 1 ],
+					"source" : [ "obj-17", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-12", 0 ],
 					"midpoints" : [ 127.514999499999931, 1022.0, 161.514999499999931, 1022.0 ],
 					"source" : [ "obj-18", 0 ]
@@ -577,9 +861,23 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-47", 0 ],
+					"source" : [ "obj-19", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-12", 1 ],
 					"midpoints" : [ 161.514999499999931, 1016.0, 181.514999499999931, 1016.0 ],
 					"source" : [ "obj-22", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-47", 4 ],
+					"source" : [ "obj-24", 0 ]
 				}
 
 			}
@@ -594,6 +892,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-35", 0 ],
 					"source" : [ "obj-25", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-47", 3 ],
+					"source" : [ "obj-27", 0 ]
 				}
 
 			}
@@ -678,8 +983,39 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-51", 0 ],
+					"source" : [ "obj-47", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-8", 0 ],
 					"source" : [ "obj-5", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-26", 2 ],
+					"order" : 0,
+					"source" : [ "obj-51", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-26", 1 ],
+					"order" : 1,
+					"source" : [ "obj-51", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-26", 0 ],
+					"order" : 2,
+					"source" : [ "obj-51", 0 ]
 				}
 
 			}
@@ -713,7 +1049,11 @@
 			}
  ],
 		"parameters" : 		{
+			"obj-11" : [ "number[5]", "number[2]", 0 ],
+			"obj-17" : [ "number[3]", "number[2]", 0 ],
 			"obj-22" : [ "live.gain~", "live.gain~", 0 ],
+			"obj-24" : [ "number[4]", "number[2]", 0 ],
+			"obj-27" : [ "flonum", "flonum", 0 ],
 			"obj-3::obj-108::obj-90" : [ "number[2]", "number", 0 ],
 			"obj-3::obj-10::obj-17::obj-70" : [ "hirt.val[14]", "hirt.val", 0 ],
 			"obj-3::obj-10::obj-19::obj-70" : [ "hirt.val[13]", "hirt.val", 0 ],
@@ -932,7 +1272,7 @@
 		"dependency_cache" : [ 			{
 				"name" : "HIRT_HISSTools_Logo.png",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/misc/HIRT_image",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/misc/HIRT_image",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/misc/HIRT_image",
 				"type" : "PNG",
 				"implicit" : 1
 			}
@@ -955,231 +1295,231 @@
 , 			{
 				"name" : "hirt.convolver.realtime~.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt.convolver~.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt.convolvestereo~.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt.dial.linear.only.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt.dial.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt.size.resample.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt.svfcoeff.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_base_name.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_conv_zoom.txt",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_convolution_rt_library.genexpr",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/code",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/code",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/code",
 				"type" : "GenX",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_convolver_clientlist_alias.txt",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_convolver_rt_part1.gendsp",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/code",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/code",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/code",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_convolver_rt_part3.gendsp",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/code",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/code",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/code",
 				"type" : "gDSP",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_cv_info_view.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_data_colls.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_decay_size_pre.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_eq_library.genexpr",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/code",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/code",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/code",
 				"type" : "GenX",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_eq_sat.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_file_check.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_file_loading.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_file_picker.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_file_set.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_filter_type.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_folder.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_gain_display_single.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_gain_params.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_reverb/HIRT_reverb_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_reverb/HIRT_reverb_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_reverb/HIRT_reverb_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_interface_eq.js",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/jsui",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/jsui",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/jsui",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_ir_single.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_loading_scheme.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_nan_fix.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_output_mini.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_convolver/HIRT_convolver_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_size_resample_feed.maxpat",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_reverb/HIRT_reverb_support",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_reverb/HIRT_reverb_support",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/patchers/HIRT_reverb/HIRT_reverb_support",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "hirt_zoom_factor.js",
 				"bootpath" : "~/Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/javascript",
-				"patcherrelativepath" : "../../HISSTools Impulse Response Toolbox (HIRT)/javascript",
+				"patcherrelativepath" : "../Documents/Max 8/Packages/HISSTools Impulse Response Toolbox (HIRT)/javascript",
 				"type" : "TEXT",
 				"implicit" : 1
 			}

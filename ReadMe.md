@@ -73,7 +73,7 @@ The `hirt.convolver~` is used to convolve the output signal with learned impulse
 
 ### Pre-trained Models
 
-Pre-trained models can be found in the `models/` folder.  A model contains three files:
+Download pre-trained models here: [Download](https://ml-ddsp-resources.s3.amazonaws.com/models.zip) - Unzip and move the `models/` folder into the root folder.  A model contains three files:
 * `model.ts`, model in the torschscript file format, containing the architecture and weights of the neural network
 * `impulse.wav`, learned impulse response for (de-)reverberation
 * `config.yaml`, summary of all model parameters and additional configuration

@@ -74,6 +74,7 @@ The `hirt.convolver~` is used to convolve the output signal with learned impulse
 ### Pre-trained Models
 
 Download pre-trained models here: [Download](https://ml-ddsp-resources.s3.amazonaws.com/models.zip) 
+
 Each model contains three files:
 * `model.ts`, model in the torschscript file format, containing the architecture and weights of the neural network
 * `impulse.wav`, learned impulse response for (de-)reverberation

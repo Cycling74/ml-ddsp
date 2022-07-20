@@ -73,7 +73,8 @@ The `hirt.convolver~` is used to convolve the output signal with learned impulse
 
 ### Pre-trained Models
 
-Download pre-trained models here: [Download](https://ml-ddsp-resources.s3.amazonaws.com/models.zip) - Unzip and move the `models/` folder into the root folder.  A model contains three files:
+Download pre-trained models here: [Download](https://ml-ddsp-resources.s3.amazonaws.com/models.zip) 
+Each model contains three files:
 * `model.ts`, model in the torschscript file format, containing the architecture and weights of the neural network
 * `impulse.wav`, learned impulse response for (de-)reverberation
 * `config.yaml`, summary of all model parameters and additional configuration
@@ -99,7 +100,7 @@ These pre-trained models have been trained on acoustic instruments in the [URMP 
 ### Example Patches
 
 Example patches which use the differentiable Max objects are located in the `patches/` folder. 
-In order to load a compatible model and perform inference, a `load` message has to be sent to the decoder object which opens the file browser to load a torchscript `*.ts` file from the according `models/` folder.
+In order to load a model and perform inference, a `load` message has to be sent to the decoder object which opens the file browser to load a torchscript model (`*.ts` file). Make sure to load a model that has been trained on the according decoder architecture.
 
 * The `audio_decoder_example.maxpat` shows how to combine the basic *ddsp.audio-decoder~* with reverb for parameter space exploration, timbre transfer and MIDI control. 
 * The `control_decoder_example.maxpat` shows how to combine the *ddsp.control-decoder~*, *ddsp.mc-harmonic_oscillator~* and *ddsp.filtered_noise~* multichannel objects with reverb for parameter space exploration, timbre transfer and MIDI control.

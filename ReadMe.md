@@ -116,6 +116,7 @@ These pre-trained models have been trained on acoustic instruments in the [URMP 
 
 Example patches which use the differentiable Max objects are located in the `patches/` folder. 
 In order to load a model and perform inference, a `load` message has to be sent to the decoder object which opens the file browser to load a torchscript model (`*.ts` file). Make sure to load a model that has been trained on the according decoder architecture.
+**Note: the buffer size / signal vector size should not exceed the maximum of 1024. A buffer size between 128 and 512 has been found to work best.**
 
 * The `audio_decoder_example.maxpat` shows how to combine the basic *ddsp.audio-decoder~* with reverb for parameter space exploration, timbre transfer and MIDI control. 
 * The `control_decoder_example.maxpat` shows how to combine the *ddsp.control-decoder~*, *ddsp.mc-harmonic_oscillator~* and *ddsp.filtered_noise~* multichannel objects with reverb for parameter space exploration, timbre transfer and MIDI control.

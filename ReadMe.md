@@ -20,18 +20,20 @@ You will also need to install a recent version of [CMake](https://cmake.org/down
 
 
 ## Building
-**Note: this repository has only been tested on Mac.**
+**Note: this repository has only been tested on Mac x86_64 (Intel) and M1 using Rosetta.**
 
 1. Clone the repository **into Max's Packages folder**. If you clone it elsewhere you will need to make an alias to it in your Packages folder.
    The *Packages* folder can be found inside of your *Max 8* folder which is inside of your user's *Documents* folder.
    Make sure you clone recursively so that all sub-modules are properly initiated : `git clone <your repository> --recursive`
-2. Download [LibTorch C++](https://pytorch.org/get-started/locally/), unzip and move the folder into the *source* folder.
-3. In the Terminal or Console app of your choice, change directories (cd) into the min-starter folder you cloned/installed in step 0.
-4. `mkdir build` to create a folder with your various build files
-5. `cd build` to put yourself into that folder
+2. Download [LibTorch C++](https://pytorch.org/get-started/locally/) (tested with the following version of LibTorch: Stable 1.12.0 > Mac > LibTorch > C++ > Default), unzip and move the folder into the *source* folder. In the Terminal or Console app of your choice, change directories (cd) into *source/libtorch/lib* and run `xattr -d -r com.apple.quarantine .` to avoid getting the `*.dylib cannot be opened because the developer cannot be verified` error.
+3. In the Terminal or Console app of your choice, change directories (cd) into the *ml-ddsp* root folder.
+4. Run `mkdir build` to create a folder with your various build files.
+5. Run `cd build` to put yourself into that folder.
 6. Now you can generate the projects for your choosen build environment:
 
 ### Mac 
+
+*only tested on Mac x86_64 (Intel) and M1 using Rosetta*
 
 Run `cmake -G Xcode ..`
 
@@ -41,7 +43,19 @@ Note: you can add the `-j4` option where "4" is the number of cores to use.  Thi
 
 ### Windows
 
-*not supported yet*
+*not tested yet*
+
+You can run `cmake --help` to get a list of the options available.  Assuming some version of Visual Studio 2019, the commands to generate the projects will look like this:
+
+`cmake -G "Visual Studio 16 2019" ..`
+
+Or using Visual Studio 2017 it will look like this:
+
+`cmake -G "Visual Studio 15 2017 Win64" ..`
+
+Having generated the projects, you can now build by opening the .sln file in the build folder with the Visual Studio app (just double-click the .sln file) or you can build on the command line like this:
+
+`cmake --build . --config Release`
 
 ### Third-party dependencies
 

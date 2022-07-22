@@ -14,7 +14,7 @@
 #include <vector>
 #include <stdlib.h>
 
-#define B_SIZE 1024
+#define B_SIZE 2048
 #define N_HARMONICS 100
 #define N_MAGNITUDES 65
 

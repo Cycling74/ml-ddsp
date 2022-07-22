@@ -14,7 +14,7 @@
 #include <vector>
 #include <stdlib.h>
 
-#define B_SIZE 1024
+#define B_SIZE 2048
 
 using namespace c74::min;
 namespace max = c74::max;

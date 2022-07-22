@@ -29,6 +29,11 @@
 
 	<methodlist>
 
+		<method name='load'>
+			<digest>Load control model (*.ts)</digest>
+			<description>Load control model (*.ts). </description>
+		</method>
+
 	</methodlist>
 
 

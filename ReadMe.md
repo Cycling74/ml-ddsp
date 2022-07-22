@@ -25,7 +25,7 @@ You will also need to install a recent version of [CMake](https://cmake.org/down
 1. Clone the repository **into Max's Packages folder**. If you clone it elsewhere you will need to make an alias to it in your Packages folder.
    The *Packages* folder can be found inside of your *Max 8* folder which is inside of your user's *Documents* folder.
    Make sure you clone recursively so that all sub-modules are properly initiated : `git clone <your repository> --recursive`
-2. Download [LibTorch C++](https://pytorch.org/get-started/locally/) (tested with the following version of LibTorch: Stable 1.12.0 > Mac > LibTorch > C++ > Default), unzip and move the folder into the *source* folder. In the Terminal or Console app of your choice, change directories (cd) into *source/libtorch/lib* and run `xattr -d -r com.apple.quarantine .` to avoid getting the `*.dylib cannot be opened because the developer cannot be verified` error.
+2. Download [LibTorch C++](https://pytorch.org/get-started/locally/) (tested with the following version of LibTorch: Stable 1.12.0 > Mac > LibTorch > C++ > Default), unzip and move the folder into the *source* folder. In the Terminal or Console app of your choice, change directories (cd) into *source/libtorch/lib* and run `xattr -d -r com.apple.quarantine .` to avoid the *"\*.dylib cannot be opened because the developer cannot be verified"* error.
 3. In the Terminal or Console app of your choice, change directories (cd) into the *ml-ddsp* root folder.
 4. Run `mkdir build` to create a folder with your various build files.
 5. Run `cd build` to put yourself into that folder.
@@ -57,7 +57,7 @@ Having generated the projects, you can now build by opening the .sln file in the
 
 `cmake --build . --config Release`
 
-### Third-party dependencies
+### Third-party Dependencies
 
 Apart from LibTorch, there are further third-party Max packages to be installed in order to run the example patches:
 

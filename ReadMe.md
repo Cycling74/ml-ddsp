@@ -103,7 +103,7 @@ The following models are currently available:
 * trumpet
 * violin
 
-You can find compatible versions of these models for the audio-, control- and latent-decoder respectively, in the according subfolders:
+Compatible versions of these models for the audio, control and latent decoder can be found in the respective subfolders:
 
 * `models/audio_decoder`
 * `models/control_decoder`

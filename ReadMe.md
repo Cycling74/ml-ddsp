@@ -97,7 +97,11 @@ Each model contains three files:
 The following models are currently available:
 
 * `models/audio_decoder`
+    * cello
+    * doublebass
+    * flute
     * saxophone
+    * trumpet
     * violin
 * `models/control_decoder`
     * cello
@@ -107,8 +111,12 @@ The following models are currently available:
     * trumpet
     * violin
 * `models/latent_decoder`
+    * cello
+    * doublebass
     * flute
+    * saxophone
     * trumpet
+    * violin
 
 These pre-trained models have been trained on acoustic instruments in the [URMP dataset](http://www2.ece.rochester.edu/projects/air/projects/URMP.html). Further explorations of trainings on non-acoustic sound sources will be explored and the collection of pre-trained models will be gradually extended.
 

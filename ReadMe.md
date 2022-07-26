@@ -2,6 +2,7 @@
 
 A collection of differentiable Max objects based on [DDSP](https://github.com/magenta/ddsp) and [DDSP PyTorch](https://github.com/acids-ircam/ddsp_pytorch) using LibTorch with min-devkit.
 
+
 ## Structure
 
 * `min-package-template` is a minimal template version of the Min-DevKit package to get started following current best-practices for package creation.
@@ -20,24 +21,24 @@ You will also need to install a recent version of [CMake](https://cmake.org/down
 
 
 ## Building
-**Note: this repository has only been tested on Mac x86_64 (Intel) and M1 using Rosetta.**
+**Note: this repository has only been built and tested on Mac x86_64 (Intel) and M1 using Rosetta. Pre-built binaries are available in the [release section](https://github.com/Cycling74/ml-ddsp/releases).**
 
-1. Clone the repository **into Max's Packages folder**. If you clone it elsewhere you will need to make an alias to it in your Packages folder.
+0. Clone the repository **into Max's Packages folder**. If you clone it elsewhere you will need to make an alias to it in your Packages folder.
    The *Packages* folder can be found inside of your *Max 8* folder which is inside of your user's *Documents* folder.
    Make sure you clone recursively so that all sub-modules are properly initiated : `git clone <your repository> --recursive`
-2. Download [LibTorch C++](https://pytorch.org/get-started/locally/) (tested with the following version of LibTorch: Stable 1.12.0 > Mac > LibTorch > C++ > Default), unzip and move the folder into the *source* folder. In the Terminal or Console app of your choice, change directories (cd) into *source/libtorch/lib* and run `xattr -d -r com.apple.quarantine .` to avoid the *"\*.dylib cannot be opened because the developer cannot be verified"* error.
-3. Change directories (cd) into the *ml-ddsp* root folder.
-4. Run `mkdir build` to create a folder with your various build files.
-5. Run `cd build` to put yourself into that folder.
-6. Now you can generate the projects for your choosen build environment:
+1. In the Terminal or Console app of your choice, change directories (cd) into the folder you cloned/installed in step 0
+2. Run `mkdir build` to create a folder with your various build files.
+3. Run `cd build` to put yourself into that folder.
+4. Now you can generate the projects for your chosen build environment:
 
 ### Mac 
 
 *only tested on Mac x86_64 (Intel) and M1 using Rosetta*
 
-Run `cmake -G Xcode ..`
-
-Next run `cmake --build .` or open the Xcode project from this "build" folder and use the GUI.
+5. Download [LibTorch C++](https://pytorch.org/get-started/locally/) (tested with the following version of LibTorch: Stable 1.12.0 > Mac > LibTorch > C++ > Default), and unzip to a known directory on your system. 
+6. Change directories (cd) into *libtorch/lib* and run `xattr -d -r com.apple.quarantine .` to avoid the *"\*.dylib cannot be opened because the developer cannot be verified"* error.
+7. Run `cmake -G Xcode -DCMAKE_PREFIX_PATH=path/to/libtorch ..` with the absolute path to the *libtorch* folder.
+8. Next run `cmake --build .` or open the Xcode project from this "build" folder and use the GUI.
 
 Note: you can add the `-j4` option where "4" is the number of cores to use.  This can help to speed up your builds, though sometimes the error output is interleaved in such a way as to make troubleshooting more difficult.
 

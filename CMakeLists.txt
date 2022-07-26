@@ -49,7 +49,7 @@ cmake_policy(SET CMP0074 NEW)
 
 
 # Find LibTorch
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/source/libtorch")
+set(CMAKE_BUILD_RPATH "@loader_path/../../../../support/;@loader_path/../../../../support/libtorch;@loader_path/../../../../support/libtorch/lib")
 find_package(Torch REQUIRED)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 include_directories("${TORCH_INCLUDE_DIRS}")

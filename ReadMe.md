@@ -113,7 +113,7 @@ Compatible versions of these models for the audio, control and latent decoder ca
 * `models/control_decoder`
 * `models/latent_decoder`
 
-These pre-trained models have been trained on monophonic recordings of acoustic instruments in the [URMP dataset](http://www2.ece.rochester.edu/projects/air/projects/URMP.html). Further explorations of trainings on non-acoustic sound sources will be explored and the collection of pre-trained models will be gradually extended.
+The acoustic models have been trained on monophonic recordings of acoustic instruments in the [URMP dataset](http://www2.ece.rochester.edu/projects/air/projects/URMP.html). The synthetic models have been trained on recordings of synthesized instruments in the [NSynth dataset](https://magenta.tensorflow.org/datasets/nsynth).
 
 ### Example Patches
 

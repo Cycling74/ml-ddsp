@@ -102,6 +102,10 @@ The following models are currently available:
 * saxophone
 * trumpet
 * violin
+* synthetic (latent decoder only)
+    * mallet
+    * synth lead
+    * vocal
 
 Compatible versions of these models for the audio, control and latent decoder can be found in the respective subfolders:
 
